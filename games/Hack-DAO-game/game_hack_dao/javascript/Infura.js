@@ -17,6 +17,9 @@ var Infura = function() {
 };
 
 Infura.prototype.sendRequest = function(name, params, callback, obj){
+	if(options_arcade){
+		return false;
+	}
 	if(options_ethereum && openkey){
 		var method = name;
 		var arParams = [params, "latest"];

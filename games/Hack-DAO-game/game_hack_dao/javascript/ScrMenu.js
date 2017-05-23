@@ -14,13 +14,26 @@ ScrMenu.prototype.init = function() {
 	this.addChild(this.bg);
 	
 	var btnDao = addButton2("btnDao", _W/2, _H/2+100);
+	btnDao.name = "btnTestnet";
 	btnDao.interactive = true;
 	btnDao.buttonMode=true;
 	this.addChild(btnDao);
 	this._arButtons.push(btnDao);
-	var tf = addText("Hack The DAO", 24, "#FFFFFF", undefined, "center", 350, 2, fontTahoma)
+	// "Hack The DAO"
+	var tf = addText("Testnet mode", 24, "#FFFFFF", undefined, "center", 350, 2, fontTahoma)
 	tf.x = 0;
-	tf.y = - 17;
+	tf.y = - tf.height/2;
+	btnDao.addChild(tf);
+	
+	var btnDao = addButton2("btnDao", _W/2, _H/2+200);
+	btnDao.name = "btnArcade";
+	btnDao.interactive = true;
+	btnDao.buttonMode=true;
+	this.addChild(btnDao);
+	this._arButtons.push(btnDao);
+	var tf = addText("Arcade mode", 24, "#FFFFFF", undefined, "center", 350, 2, fontTahoma)
+	tf.x = 0;
+	tf.y = - tf.height/2;
 	btnDao.addChild(tf);
 	
 	var str1 = "This game is a proof of concept and intended for test purposes. It is based on experimental software.";
@@ -58,7 +71,12 @@ ScrMenu.prototype.clickCell = function(item_mc) {
 		}
 	}
 	
-	if(item_mc.name == "btnDao"){
+	if(item_mc.name == "btnTestnet"){
+		options_arcade = false;
+		this.removeAllListener();
+		showLevels();
+	} else if(item_mc.name == "btnArcade"){
+		options_arcade = true;
 		this.removeAllListener();
 		showLevels();
 	}

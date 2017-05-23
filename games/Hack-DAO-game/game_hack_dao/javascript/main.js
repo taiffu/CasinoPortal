@@ -1,6 +1,6 @@
 var _W = 1280;
 var _H = 720;
-var version = "v. 1.1.14"
+var version = "v. 1.1.15"
 var login_obj = {};
 var dataAnima = [];
 var dataMovie = [];
@@ -30,6 +30,7 @@ var options_rpc = false;
 var options_music = true;
 var options_sound = true;
 var options_mobile = true;
+var options_arcade = false;
 var options_pause = false;
 var options_txt_offset = 0;
 
@@ -37,6 +38,7 @@ var ERROR_KEYTHEREUM = 1;
 var ERROR_TRANSACTION = 2;
 var ERROR_KEY = 3;
 var ERROR_BANK = 4;
+var ERROR_BLOCKCHAIN = 5;
 
 var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame
     || window.mozRequestAnimationFrame || window.oRequestAnimationFrame
@@ -432,7 +434,6 @@ function loadData() {
 		mainet = localStorage.getItem('mainnet')
 		openkey = localStorage.getItem('openkey')
 		privkey = localStorage.getItem('privkey')
-		console.log("openkey:", openkey);
 		if (localStorage.getItem('daocasino_hack')){
 			var login_str = localStorage.getItem('daocasino_hack')
 			login_obj = JSON.parse(login_str);
@@ -817,6 +818,14 @@ function getLevels(){
 	}
 	
 	return login_obj["levels"];
+}
+
+function getArcadeBalance(){
+	if(login_obj["balanceArcade"]){}else{
+		login_obj["balanceArcade"] = 1;
+	}
+	
+	return login_obj["balanceArcade"];
 }
 
 function initjiggle(t, startvalue, finishvalue, div, step){
