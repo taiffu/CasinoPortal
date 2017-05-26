@@ -64,9 +64,11 @@ function sendRefAndOperator() {
                     }),
             success: function (r) {
                 console.log(r.result)
-                if (d.result == undefined){
+                if (r.result == undefined){
                     console.log("again")
                     setTimeout(sendRefAndOperator, 5000)
+                } else{
+                    document.getElementById('bg_popup').style.display='none';
                 }
             }})
         }
