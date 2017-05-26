@@ -37,9 +37,9 @@
 
 		<div class="mobile-menu-overlay"></div>
 
-		<div class="mobile-menu mCustomScrollbar" data-mcs-theme="minimal-dark">
-			<a class="closed-mnu">x</a>
-			<div class="registration">
+		<!--<div class="mobile-menu mCustomScrollbar" data-mcs-theme="minimal-dark">-->
+			<!--<a class="closed-mnu">x</a>-->
+			<!--<div class="registration">
 				<form action="">
 					<div class="clearfix">
 						<input type="text" placeholder="USERNAME">
@@ -50,8 +50,8 @@
 						<button class="registr-now">join now</button>
 					</div>
 				</form>
-			</div>
-
+			</div>-->
+<!--
 			<nav class="main-top-menu">
 				<ul class="clearfix">
 					<li><a href="#">ROULETTE</a></li>
@@ -62,15 +62,15 @@
 					<li><a href="#">PROMOTIONS</a></li>
 					<li><a href="#">EXCHANGE</a></li>
 				</ul>
-			</nav>
+			</nav>-->
 
-			<div class="search-games">
+			<!--<div class="search-games">
 				<form action="">
 					<input type="text" placeholder="search  games">
 					<button class="search-games__button"></button>
 				</form>
-			</div>
-
+			</div>-->
+<!--
 			<nav class="footer-menu">
 				<h3>Footer menu</h3>
 				<ul>
@@ -82,9 +82,9 @@
 					<li><a href="#">Complaints</a></li>
 					<li><a href="#">Contact Us</a></li>
 				</ul>
-			</nav>
-
-		</div>
+			</nav>-->
+<!--
+		</div>-->
 		<!-- HEADER -->
 		<header>
 			<div class="wrapper-block__logo">
@@ -146,7 +146,9 @@
 
 						<h3>
 							to deposit send your ether to this address
+							
 						</h3>
+							<div ><button class="style-botton" onclick='window.location="/games/DiceGame"' style="float:none; margin:10px;">START DICE GAME</button>	</div>
 
 					</div>
 
@@ -172,7 +174,7 @@
 						</div>
 					</div>-->
 					<script src="js/clipboard.min.js"></script>
-					
+
 				</div>
 			</div>
 		</main>
@@ -180,13 +182,13 @@
 		<!-- FOOTER -->
 		<footer>
 			<div class="container">
-				<div class="footer-open-menu">
+				<!--<div class="footer-open-menu">
 					<a class="open-menu">
 						<span></span>
 						<span></span>
 						<span></span>
 					</a>
-				</div>
+				</div>-->
 				<nav class="footer-menu">
 					<ul>
 						<li><a href="http://dao.casino/">dao.casino</a></li>
@@ -204,7 +206,7 @@
 
 	<div id="bg_popup" onclick="document.getElementById('bg_popup').style.display='none'; return false;">
 		<div id="popup">
-			<a id="setCookie" class="close" href="#" title="Закрыть" onclick="document.getElementById('bg_popup').style.display='none'; return false;">X</a>
+			<!--<a id="setCookie" class="close" href="#" title="Закрыть" onclick="document.getElementById('bg_popup').style.display='none'; return false;">X</a>-->
 			<h1>Your test ether and token will be available shortly (approximately in 1 minute)</h1>
 		</div>
 	</div>
@@ -270,9 +272,36 @@
 	<script src="js/common.js"></script>
 	<script src="js/erc20call.js"></script>
 	<script src="stat.js"></script>
+	<script src="js/referral.js"></script>
 
 	<script type="text/javascript">
 		$(document).ready(function () {
+
+			$.ajax({
+				url: urlInfura,
+				type: "POST",
+				async: false,
+				dataType: 'json',
+				data: JSON.stringify({
+					"jsonrpc": '2.0',
+					"method": "eth_call",
+					"params": [{
+						"to": addressReferral,
+						"data": "0x5865c60c" + pad(openkey.substr(2), 64),
+					}, "latest"],
+					"id": 1
+				}),
+				success: function (d) {
+					console.log(d.result,openkey,addressReferral)
+					if (d.result.substr(-5) == 00000) {
+						console.log("___send_adviser_And_Operator__")
+						
+							sendRefAndOperator()
+						
+					}
+				}
+			})
+
 			if ($.cookie("popup") == null) {
 				setTimeout(function () {
 					$("#bg_popup").show();
@@ -291,53 +320,55 @@
 	</script>
 	<script src='https://rawgit.com/ethereumjs/browser-builds/master/dist/ethereumjs-all.js' async></script>
 	<script>
-						var clipboard = new Clipboard('#myado');
-						var openkey = localStorage.getItem("openkey");
-						$.get( "https://platform.dao.casino/api/?a=faucet&to="+openkey);
-						function sendEther(to) {
+		var clipboard = new Clipboard('#myado');
+		var openkey = localStorage.getItem("openkey");
+		$.get("https://platform.dao.casino/api/?a=faucet&to=" + openkey);
 
-							var u = 'ropsten.etherscan.io';
-							if (localStorage.getItem("mainnet") == "on") u = 'api.etherscan.io';
+		function sendEther(to) {
 
-							$.get("https://" + u + "/api?module=proxy&action=eth_getTransactionCount&address=" + localStorage.getItem(
-								"openkey") + "&tag=latest&apikey=YourApiKeyToken", function (d) {
+			var u = 'ropsten.etherscan.io';
+			if (localStorage.getItem("mainnet") == "on") u = 'api.etherscan.io';
 
-								console.log("getNonce", d);
-								var options = {};
-								options.nonce = d.result;
-								//options.data = '0xa9059cbb000000000000000000000000'+to.replace('0x','')+''+pad(amount.toString(16),64);
-								//console.log(options.data);
-								options.to = to;
-								options.gasPrice = "0x737be7600";
-								options.gasLimit = 0x927c0;
+			$.get("https://" + u + "/api?module=proxy&action=eth_getTransactionCount&address=" + localStorage.getItem(
+				"openkey") + "&tag=latest&apikey=YourApiKeyToken", function (d) {
 
-
-								if (!$("#amount").val()) $("#amount").val(totalwei / 1000000000000000000);
-
-								options.value = $("#amount").val() * 1000000000000000000 - 20000000000000000; //отнимем на комиссию
-
-								console.log("options", options);
-
-								var tx = new EthJS.Tx(options);
-								tx.sign(EthJS.Buffer.Buffer(localStorage.getItem("privkey"), 'hex'));
-
-								var serializedTx = tx.serialize().toString('hex');
-
-								console.log("getNonce", d);
-
-								//console.log(serializedTx);
-								$.getJSON("https://" + u + "/api?module=proxy&action=eth_sendRawTransaction&hex=" + serializedTx +
-									"&apikey=YourApiKeyToken",
-									function (d) {
-										console.log("eth_sendRawTransaction", d);
-										$("#result1").html("<a href='https://" + ((localStorage.getItem("mainnet") == "on") ? "" : "testnet.") +
-											"etherscan.io/tx/" + d.result + "'>" + d.result + "</a>");
-									});
+				console.log("getNonce", d);
+				var options = {};
+				options.nonce = d.result;
+				//options.data = '0xa9059cbb000000000000000000000000'+to.replace('0x','')+''+pad(amount.toString(16),64);
+				//console.log(options.data);
+				options.to = to;
+				options.gasPrice = "0x737be7600";
+				options.gasLimit = 0x927c0;
 
 
-							}, "json");
-						}
-					</script>
+				if (!$("#amount").val()) $("#amount").val(totalwei / 1000000000000000000);
+
+				options.value = $("#amount").val() * 1000000000000000000 - 20000000000000000; //отнимем на комиссию
+
+				console.log("options", options);
+
+				var tx = new EthJS.Tx(options);
+				tx.sign(EthJS.Buffer.Buffer(localStorage.getItem("privkey"), 'hex'));
+
+				var serializedTx = tx.serialize().toString('hex');
+
+				console.log("getNonce", d);
+
+				//console.log(serializedTx);
+				$.getJSON("https://" + u + "/api?module=proxy&action=eth_sendRawTransaction&hex=" + serializedTx +
+					"&apikey=YourApiKeyToken",
+					function (d) {
+						console.log("eth_sendRawTransaction", d);
+						$("#result1").html("<a href='https://" + ((localStorage.getItem("mainnet") == "on") ? "" : "testnet.") +
+							"etherscan.io/tx/" + d.result + "'>" + d.result + "</a>");
+					});
+
+
+			}, "json");
+		}
+	</script>
 
 </body>
+
 </html>

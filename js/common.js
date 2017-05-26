@@ -87,6 +87,8 @@ if(localStorage.getItem('isreg')!= null && !localStorage.getItem('keystore') ){
 }
 
 var secret = lightwallet.keystore.generateRandomSeed();
+var operator = "0x42";
+
 $("#seed").html(secret);
 function wallet_open(secretSeed) {
 	
@@ -111,38 +113,17 @@ function wallet_open(secretSeed) {
 			localStorage.setItem("mainnet", "off");
 			console.log(addr, prv_key);
 			$.get( "https://platform.dao.casino/api/?a=faucet&to="+openkey);
-			window.location = "balance.html";
-			
+			window.location = "balance.html"+window.location.search;
 		});
 	});
-	
-	
+
 }
 else{
 	$('#popup-open-text-before').html('Please, enter your seed phrase')
 
 }
 
-
-
-	// lightwallet.keystore.deriveKeyFromPassword('123123', function (err, pwDerivedKey) {
-	// 	ks = new lightwallet.keystore(secretSeed, pwDerivedKey);
-	// 	ks.generateNewAddress(pwDerivedKey, 1);
-	// 	var ser = ks.serialize()
-	// 	console.log(ser);
-
-	// 	var address = ks.getAddresses()[0];
-	// 	var prv_key = ks.exportPrivateKey(address, pwDerivedKey);
-	// 	localStorage.setItem("openkey", "0x" + address);
-	// 	localStorage.setItem("privkey", prv_key);
-	// 	localStorage.setItem("isreg", 1);
-	// 	localStorage.setItem("mainnet", "off");
-	// 	localStorage.setItem("keystore", ser);
-	// 	console.log('address and key: ', address, prv_key);
-	// 	//
-
-
-	// });
+	
 }
 
 
