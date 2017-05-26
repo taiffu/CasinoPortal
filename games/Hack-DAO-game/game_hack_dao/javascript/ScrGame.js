@@ -163,7 +163,9 @@ ScrGame.prototype.init = function() {
 	this.btnLevels = this.createButton("btnLevels", posX, posY+ofssetY*2, "Menu", 24)
 	this.btnStart = this.createButton("btnStart", _W/2, 600, "Start", 34, 24);
 	this.btnStart.visible = false;
-	this.btnSmart = this.createButton("btnSmart", posX, ofssetY*11, "Check contract", 17, 12)
+	if(!options_arcade){
+		this.btnSmart = this.createButton("btnSmart", posX, ofssetY*11, "Check contract", 17, 12)
+	}
 	if(options_debug){
 		this.btnExport = this.createButton("btnExport", posX, posY+ofssetY*3, "Export keys", 21)
 		this.btnReset = this.createButton("btnReset", posX, posY+ofssetY*4, "Clear log", 26, 17)
@@ -175,6 +177,14 @@ ScrGame.prototype.init = function() {
 	infura.sendRequest("getBalance", openkey, _callback);
 	infura.sendRequest("getBalanceBank", addressContract, _callback);
 	infura.sendRequest("getBlockNumber", undefined, _callback);
+	if(options_arcade){
+		if(login_obj["balance"] < 0.3){
+			login_obj["balance"] = getArcadeBalance();
+		}
+		obj_game["balance"] = login_obj["balance"];
+		obj_game["balanceBank"] = 100000000000000000000;
+		this.tfBalance.setText(toFixed(login_obj["balance"], 4));
+	}
 	
 	this.interactive = true;
 	this.on('mousedown', this.touchHandler);
@@ -407,30 +417,7 @@ ScrGame.prototype.createAccount = function() {
 		this.tfIdUser.setText(openkey);
 		this.showWndStart();
 	}else{
-		var tfCreateKey = addText("Now you generate address", 40, "#FF8611", "#000000", "center", 800)
-		tfCreateKey.x = _W/2;
-		tfCreateKey.y = 120;
-		this.face_mc.addChild(tfCreateKey);
-		createjs.Tween.get(tfCreateKey).wait(2000).to({alpha:0},500)
-		
-		if(keyethereum){
-			var dk = keyethereum.create();
-			var privateKey = dk.privateKey;
-			var address = ethUtil.privateToAddress(privateKey);
-			address = ethUtil.toChecksumAddress(address.toString('hex'));
-			privateKey = privateKey.toString('hex');
-			privkey = privateKey;
-			openkey = address;
-			this.tfIdUser.setText(address);
-			if(options_testnet){
-				var str = "https://platform.dao.casino/api/?a=faucet&to="+openkey;
-				this.sendUrlRequest(str, "getEthereum");
-			}
-			this.showTestEther();
-			saveData();
-		} else {
-			this.showError(ERROR_KEYTHEREUM);
-		}
+		this.showError(ERROR_KEYTHEREUM);
 	}
 }
 
@@ -524,8 +511,14 @@ ScrGame.prototype.closeWindow = function(wnd) {
 
 ScrGame.prototype.refillBalance = function() {
 	if(openkey && options_ethereum){
-		var url = "https://platform.dao.casino/balance.html";
-		window.open(url, "_self"); // "_blank",  "_self"
+		if(options_arcade){;
+			login_obj["balance"] = 1;
+			obj_game["balance"] = login_obj["balance"];
+			this.tfBalance.setText(login_obj["balance"]);
+		} else {
+			var url = "https://platform.dao.casino/balance.html";
+			window.open(url, "_self"); // "_blank",  "_self"
+		}
 	}
 }
 
@@ -576,6 +569,9 @@ ScrGame.prototype.showError = function(value) {
 			break;
 		case ERROR_BANK:
 			str = "OOOPS! \n No money in the bank."
+			break;
+		case ERROR_BLOCKCHAIN:
+			str = "OOOPS! \n No answer from the blockchain. Try the arcade mode."
 			break;
 		default:
 			str = "ERR: " + value;
@@ -828,7 +824,22 @@ ScrGame.prototype.startGameEth = function(){
 		return false;
 	}
 	
-	infura.sendRequest("start", openkey, _callback);
+	if(options_arcade){
+		var prnt = obj_game["game"];
+		prnt.timeGetResult = 0;
+		var bet = betslevel[this.curLevel].bet;
+		login_obj["balance"] -= bet;
+		obj_game["balance"] = login_obj["balance"];
+		this.tfBalance.setText(toFixed(login_obj["balance"], 4));
+		login_obj["startGame"] = true;
+		login_obj["curLevel"] = prnt.curLevel;
+		
+		prnt.createLevel();
+		prnt.bSendRequest = false;
+		prnt.startGame = true;
+	} else {
+		infura.sendRequest("start", openkey, _callback);
+	}
 }
 
 // RESULT
@@ -867,6 +878,12 @@ ScrGame.prototype.resultGameEth = function(val){
 	obj_game["time"] = this.timeTotal;
 	
 	infura.sendRequest("getBalance", openkey, _callback);
+	if(options_arcade && val){
+		login_obj["balance"] += (betslevel[this.curLevel].bet + betslevel[this.curLevel].prize);
+		obj_game["balance"] = login_obj["balance"];
+		this.tfBalance.setText(toFixed(login_obj["balance"], 4));
+		betslevel[this.curLevel].prize;
+	}
 	this.itemResult.visible = true;
 	this.startGame = false;
 	this.timeTotal = 0;
@@ -956,14 +973,22 @@ ScrGame.prototype.resultGame = function(val) {
 
 ScrGame.prototype.clickHeroDao = function() {
 	this.itemDao.initjiggle();
-	if(this.itemDao.health > this.itemDao.healthMax*0.1 + this.damage){
-		this.itemDao.health -=this.damage;
+	if(options_arcade){
+		if(this.itemDao.health > this.damage){
+			this.itemDao.health -=this.damage;
+		} else {
+			this.resultGameEth(true);
+		}
 	} else {
-		this.resurrection = this.resurrectionCur*75;
-		var pt = {x:this.itemDao.x, y:this.itemDao.y - 100}
-		this.createText(pt, "HA-HA-HA");
-		if(this.itemDao.skin == "dao"){
-			this.itemDao.setAct("Cure")
+		if(this.itemDao.health > this.itemDao.healthMax*0.1 + this.damage){
+			this.itemDao.health -=this.damage;
+		} else {
+			this.resurrection = this.resurrectionCur*75;
+			var pt = {x:this.itemDao.x, y:this.itemDao.y - 100}
+			this.createText(pt, "HA-HA-HA");
+			if(this.itemDao.skin == "dao"){
+				this.itemDao.setAct("Cure")
+			}
 		}
 	}
 	this.createIcoEthereum("iconEthereum");
@@ -1436,6 +1461,9 @@ ScrGame.prototype.updateHolder = function(diffTime){
 						if(this.valueLevel >= this.valueLevelMax){
 							this._gameOverClient = true;
 							this.itemDao.sprite.img.stop();
+							if(options_arcade){
+								this.resultGameEth(false);
+							}
 						}
 						mc.tLife = 0;
 					}
@@ -1473,6 +1501,9 @@ ScrGame.prototype.updateHolder = function(diffTime){
 						this.tfTitleLevel.setText("Stolen money: " + this.valueLevel + "/" + this.valueLevelMax);
 						if(this.valueLevel >= this.valueLevelMax){
 							this._gameOverClient = true;
+							if(options_arcade){
+								this.resultGameEth(false);
+							}
 						}
 					}
 					mc.tLife = 0;
@@ -1531,6 +1562,9 @@ ScrGame.prototype.updateHolder = function(diffTime){
 						this.tfTitleLevel.setText("Bad proposal: " + this.valueLevel + "/" + this.valueLevelMax);
 						if(this.valueLevel >= this.valueLevelMax){
 							this._gameOverClient = true;
+							if(options_arcade){
+								this.resultGameEth(false);
+							}
 						}
 					}
 					mc.tLife = 0;
@@ -1558,6 +1592,9 @@ ScrGame.prototype.updateHolder = function(diffTime){
 					if(this.valueLevel >= this.valueLevelMax){
 						this._gameOverClient = true;
 						this.itemDao.sprite.img.stop();
+						if(options_arcade){
+							this.resultGameEth(false);
+						}
 					}
 					mc.tLife = 0;
 				}
@@ -1596,14 +1633,18 @@ ScrGame.prototype.update = function() {
 			// this.bSendRequest == false){
 				// this.bSendRequest = true;
 				this.timeGetResult = 0;
-				if(this.gameTxHash){
-					this.clickDAO = false;
-					var params = {
-						"fromBlock": blockNumber,
-						"toBlock": "latest",
-						"address": addressContract,
+				if(this.timeTotal > 120*60){
+					this.showError(ERROR_BLOCKCHAIN);
+				} else {
+					if(this.gameTxHash){
+						this.clickDAO = false;
+						var params = {
+							"fromBlock": blockNumber,
+							"toBlock": "latest",
+							"address": addressContract,
+						}
+						infura.sendRequest("getLogs", params, _callback);
 					}
-					infura.sendRequest("getLogs", params, _callback);
 				}
 			}
 		}
@@ -1647,72 +1688,76 @@ ScrGame.prototype.update = function() {
 	this.healthDao();
 	
 	if(this.startGame){
-		if(this.curLevel == 2){
-			if(_mouseX && _mouseY){
-				this.itemDao.initMove({x:_mouseX, y:_mouseY})
-			}
-			this.timeMoney += diffTime;
-			if(this.timeMoney >= TIME_RESPAWN_MONEY){
-				this.timeMoney = 0;
-				var posX = Math.round(Math.random()*(_W-200))+100
-				this.createObj({x:posX, y:-50}, "iconEthereum")
-			}
-		} else if(this.curLevel == 3){
-			this.timeProposal += diffTime;
-			if(this.timeProposal >= TIME_RESPAWN_PROPOSAL){
-				this.timeProposal = 0;
-				this.createObj({x:-60, y:500}, "itemProposal")
-			}
-		} else if(this.curLevel == 4){
-			this.timeHacker += diffTime;
-			if(this.timeHacker >= TIME_RESPAWN_HACKER){
-				this.timeHacker = 0;
-				var posY = 510 + Math.random()*30;
-				this.createObj({x:-60, y:posY}, "itemHacker")
-			}
-		} else if(this.curLevel == 5){
-			this.timeProposal += diffTime;
-			if(this.timeProposal >= TIME_RESPAWN_MINER){
-				this.timeProposal = 0;
-				this.createObj({x:-30, y:280}, "itemMiner")
-			}
-			var cO = this.doorOld;
-			if(cO){
-				if(cO.bOpen){
-					cO.bStart = true;
-					cO.scale.x -= 0.1;
-					if(cO.scale.x < -0.8){
-						cO.bOpen = false;
-						cO.bClose = true;
+		if(options_arcade && this.curLevel > 1 && this.timeTotal > 30*1000){
+			this.resultGameEth(true);
+		} else {
+			if(this.curLevel == 2){
+				if(_mouseX && _mouseY){
+					this.itemDao.initMove({x:_mouseX, y:_mouseY})
+				}
+				this.timeMoney += diffTime;
+				if(this.timeMoney >= TIME_RESPAWN_MONEY){
+					this.timeMoney = 0;
+					var posX = Math.round(Math.random()*(_W-200))+100
+					this.createObj({x:posX, y:-50}, "iconEthereum")
+				}
+			} else if(this.curLevel == 3){
+				this.timeProposal += diffTime;
+				if(this.timeProposal >= TIME_RESPAWN_PROPOSAL){
+					this.timeProposal = 0;
+					this.createObj({x:-60, y:500}, "itemProposal")
+				}
+			} else if(this.curLevel == 4){
+				this.timeHacker += diffTime;
+				if(this.timeHacker >= TIME_RESPAWN_HACKER){
+					this.timeHacker = 0;
+					var posY = 510 + Math.random()*30;
+					this.createObj({x:-60, y:posY}, "itemHacker")
+				}
+			} else if(this.curLevel == 5){
+				this.timeProposal += diffTime;
+				if(this.timeProposal >= TIME_RESPAWN_MINER){
+					this.timeProposal = 0;
+					this.createObj({x:-30, y:280}, "itemMiner")
+				}
+				var cO = this.doorOld;
+				if(cO){
+					if(cO.bOpen){
+						cO.bStart = true;
+						cO.scale.x -= 0.1;
+						if(cO.scale.x < -0.8){
+							cO.bOpen = false;
+							cO.bClose = true;
+						}
+					}
+					if(cO.bClose){
+						cO.scale.x += 0.1;
+						if(cO.scale.x > 0.9){
+							cO.scale.x = 1;
+							cO.bOpen = false;
+							cO.bClose = false;
+							cO.bStart = false;
+						}
 					}
 				}
-				if(cO.bClose){
-					cO.scale.x += 0.1;
-					if(cO.scale.x > 0.9){
-						cO.scale.x = 1;
-						cO.bOpen = false;
-						cO.bClose = false;
-						cO.bStart = false;
+				var cN = this.doorNew;
+				if(cN){
+					if(cN.bOpen){
+						cN.bStart = true;
+						cN.scale.x -= 0.1;
+						if(cN.scale.x < -0.8){
+							cN.bOpen = false;
+							cN.bClose = true;
+						}
 					}
-				}
-			}
-			var cN = this.doorNew;
-			if(cN){
-				if(cN.bOpen){
-					cN.bStart = true;
-					cN.scale.x -= 0.1;
-					if(cN.scale.x < -0.8){
-						cN.bOpen = false;
-						cN.bClose = true;
-					}
-				}
-				if(cN.bClose){
-					cN.scale.x += 0.1;
-					if(cN.scale.x > 0.9){
-						cN.scale.x = 1;
-						cN.bOpen = false;
-						cN.bClose = false;
-						cN.bStart = false;
+					if(cN.bClose){
+						cN.scale.x += 0.1;
+						if(cN.scale.x > 0.9){
+							cN.scale.x = 1;
+							cN.bOpen = false;
+							cN.bClose = false;
+							cN.bStart = false;
+						}
 					}
 				}
 			}
