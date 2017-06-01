@@ -3,7 +3,7 @@ var addressReferral = "0x94cfd3646f89166afe094940159742a3f6ba9a0c";
 var operator = "0x42424242"
 
 function sendRefAndOperator() {
-
+    console.log("send Referral")
     var ks = lightwallet.keystore.deserialize(localStorage.getItem('keystore'));
     var openkey = localStorage.getItem('openkey')
     var q_params = (function () {
@@ -31,8 +31,6 @@ function sendRefAndOperator() {
             return false;
         }
         var args = [operator, referal];
-
-
 
         $.ajax({
             url: urlInfura,
@@ -76,6 +74,30 @@ function sendRefAndOperator() {
     });
 
 }
+
+function checkOperator(){
+        $.ajax({
+        type: "POST",
+        url: urlInfura,
+        dataType: 'json',
+        async: false,
+        data: JSON.stringify({
+            "id": 0,
+            "jsonrpc": '2.0',
+            "method": "eth_call",
+            "params": [{
+                "from": openkey,
+                "to": addressReferral,
+                "data": "0x5865c60c" + pad(openkey.substr(2), 64)
+            }, "latest"]
+        }),
+        success: function (d) {
+            console.log(d.result)
+        }
+    })
+
+}
+
 
 
 

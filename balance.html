@@ -277,31 +277,6 @@
 	<script type="text/javascript">
 		$(document).ready(function () {
 
-			$.ajax({
-				url: urlInfura,
-				type: "POST",
-				async: false,
-				dataType: 'json',
-				data: JSON.stringify({
-					"jsonrpc": '2.0',
-					"method": "eth_call",
-					"params": [{
-						"to": addressReferral,
-						"data": "0x5865c60c" + pad(openkey.substr(2), 64),
-					}, "latest"],
-					"id": 1
-				}),
-				success: function (d) {
-					console.log(d.result,openkey,addressReferral)
-					if (d.result.substr(-5) == 00000) {
-						console.log("___send_adviser_And_Operator__")
-						
-							sendRefAndOperator()
-						
-					}
-				}
-			})
-
 			if ($.cookie("popup") == null) {
 				setTimeout(function () {
 					$("#bg_popup").show();
@@ -314,13 +289,22 @@
 				$("#bg_popup").hide();
 			}
 		});
+	
 	</script>
+	
 	<script>
 		$("#myado").html(localStorage.getItem("openkey"));
 	</script>
-	<script src='https://rawgit.com/ethereumjs/browser-builds/master/dist/ethereumjs-all.js' async></script>
+
+	<script async>
+		var openkey = localStorage.getItem("openkey");
+		$.get("https://platform.dao.casino/api/?a=faucet&to=" + openkey);
+		console.log("fauset")
+	</script>
+	
 	<script>
 		var clipboard = new Clipboard('#myado');
+
 		var openkey = localStorage.getItem("openkey");
 		$.get("https://platform.dao.casino/api/?a=faucet&to=" + openkey);
 
@@ -367,6 +351,33 @@
 
 			}, "json");
 		}
+	</script>
+
+	<script>
+					$.ajax({
+				url: urlInfura,
+				type: "POST",
+				async: false,
+				dataType: 'json',
+				data: JSON.stringify({
+					"jsonrpc": '2.0',
+					"method": "eth_call",
+					"params": [{
+						"to": addressReferral,
+						"data": "0x5865c60c" + pad(openkey.substr(2), 64),
+					}, "latest"],
+					"id": 1
+				}),
+				success: function (d) {
+					console.log(d.result,openkey,addressReferral)
+					if (d.result.substr(-5) == 00000) {
+						console.log("___send_adviser_And_Operator__")
+						
+							sendRefAndOperator()
+						
+					}
+				}
+			})
 	</script>
 
 </body>

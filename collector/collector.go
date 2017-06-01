@@ -21,6 +21,7 @@ var broadcast = make(chan Message)
 var stop = make(chan bool)
 var url = "https://ropsten.infura.io/JCnK5ifEPH9qcQkX0Ahl"
 var lastTx []Message
+var i int
 
 type logsParams struct {
 	fromBlock string
@@ -81,7 +82,7 @@ func getInfo(address string, stop chan bool) {
 						gameID := data[2:len(data)]
 						info := getInfoByID(address, gameID)
 						mes := Message{tx, info}
-						lastTx = append(lastTx, mes)
+						addLastTx(mes)
 						broadcast <- mes
 						fmt.Println("MESSAGE:", tx)
 					}
@@ -91,7 +92,14 @@ func getInfo(address string, stop chan bool) {
 
 		}
 	}
+}
 
+func addLastTx(m Message) {
+	lastTx[i] = m
+	i++
+	if i == 10 {
+		i = 0
+	}
 }
 
 func getInfoByID(address string, id string) string {
@@ -191,7 +199,6 @@ func getBankrollers() {
 			go getInfo("0x6a8F29E3D9E25bc683A852765F24eCb4Be5903FC", stop)
 		}
 		time.Sleep(100 * time.Second)
-		//lastTx = []Message{}
 		stop <- true
 	}
 }
