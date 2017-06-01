@@ -19,7 +19,6 @@ function sendRefAndOperator() {
         return params;
     }());
     var referal = q_params.ref;
-    
     var options = {};
     options.to = addressReferral;
     options.gasPrice = "0x9502F9000";
@@ -42,7 +41,6 @@ function sendRefAndOperator() {
                 "method": "eth_getTransactionCount",
                 "params": [openkey, "latest"],
                 "id": 1
-
             }),
             success: function (d) {
                 options.nonce = d.result;
@@ -66,7 +64,7 @@ function sendRefAndOperator() {
                     console.log("again")
                     setTimeout(sendRefAndOperator, 5000)
                 } else{
-                    document.getElementById('bg_popup').style.display='none';
+                   	    $('#bg_popup').hide();
                 }
             }})
         }
@@ -75,28 +73,28 @@ function sendRefAndOperator() {
 
 }
 
-function checkOperator(){
-        $.ajax({
-        type: "POST",
-        url: urlInfura,
-        dataType: 'json',
-        async: false,
-        data: JSON.stringify({
-            "id": 0,
-            "jsonrpc": '2.0',
-            "method": "eth_call",
-            "params": [{
-                "from": openkey,
-                "to": addressReferral,
-                "data": "0x5865c60c" + pad(openkey.substr(2), 64)
-            }, "latest"]
-        }),
-        success: function (d) {
-            console.log(d.result)
-        }
-    })
+// function checkOperator(){
+//         $.ajax({
+//         type: "POST",
+//         url: urlInfura,
+//         dataType: 'json',
+//         async: false,
+//         data: JSON.stringify({
+//             "id": 0,
+//             "jsonrpc": '2.0',
+//             "method": "eth_call",
+//             "params": [{
+//                 "from": openkey,
+//                 "to": addressReferral,
+//                 "data": "0x5865c60c" + pad(openkey.substr(2), 64)
+//             }, "latest"]
+//         }),
+//         success: function (d) {
+//             console.log(d.result)
+//         }
+//     })
 
-}
+// }
 
 
 
