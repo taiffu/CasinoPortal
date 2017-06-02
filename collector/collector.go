@@ -20,8 +20,8 @@ var clients = make(map[*websocket.Conn]bool) // connected clients
 var broadcast = make(chan Message)
 var stop = make(chan bool)
 var url = "https://ropsten.infura.io/JCnK5ifEPH9qcQkX0Ahl"
-var lastTx []Message
-var i int
+var lastTx [10]Message
+var j = 0
 
 type logsParams struct {
 	fromBlock string
@@ -95,10 +95,12 @@ func getInfo(address string, stop chan bool) {
 }
 
 func addLastTx(m Message) {
-	lastTx[i] = m
-	i++
-	if i == 10 {
-		i = 0
+	fmt.Println("Last MESSAGE:", j, m)
+	lastTx[j] = m
+	j++
+	fmt.Println("___i___:", j)
+	if j > 10 {
+		j = 0
 	}
 }
 

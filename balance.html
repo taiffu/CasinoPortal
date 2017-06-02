@@ -152,27 +152,36 @@
 
 					</div>
 
-					<!--<div style='margin-top:50px' id="withdraw">
+					<div style='margin-top:50px' id="withdraw">
 						<p>
 							To withdraw your ether insert your ethereum address below and click WITHDRAW
 						</p>
 
 						<div class="balanse-wrap__input clearfix">
-							<form action='#' onsubmit='sendEther($("#outetht").val());return false;' method='post'>
-								<div class="col-md-5">
+							<form action='#' >
+								<div class="col-md-4">
 									<input type='text' style='' required name='' id='outetht' class='form-control' style='color:black' placeholder='0x...' value=''>
 								</div>
-								<div class="col-md-3">
+								<div class="col-md-2">
 									<input type="text" id='amount' placeholder='amount ETH'>
 								</div>
+								<div  class="col-md-2">
+									
+										<select class="form-control" id="typeSend" style='color:black'>
+											<option  value="eth">ETH</option>
+					 						<option  value="bet">BET</option>
+										</select>
+							
+								</div>
 								<div class="col-md-4">
-									<button type='submit' class="disclaimer-btn registr-now">withdraw</button>
+									<button  id="sendValue" onclick="" class="disclaimer-btn registr-now">withdraw</button>
 
 								</div>
-								<div id='result1'></div>
+								
 							</form>
 						</div>
-					</div>-->
+						<div class="row" id="Wresult"></div>
+					</div>
 					<script src="js/clipboard.min.js"></script>
 
 				</div>
@@ -204,10 +213,9 @@
 
 	</div>
 
-	<div id="bg_popup" onclick="document.getElementById('bg_popup').style.display='none'; return false;">
+	<div id="bg_popup" >
 		<div id="popup">
-			<!--<a id="setCookie" class="close" href="#" title="Закрыть" onclick="document.getElementById('bg_popup').style.display='none'; return false;">X</a>-->
-			<h1>Your test ether and token will be available shortly (approximately in 1 minute)</h1>
+		<h1>Your test ether and token will be available shortly (approximately in 1 minute)</h1>
 		</div>
 	</div>
 
@@ -273,11 +281,22 @@
 	<script src="js/erc20call.js"></script>
 	<script src="stat.js"></script>
 	<script src="js/referral.js"></script>
+	<script src="js/sendMoney.js"></script>
 
 	<script type="text/javascript">
 
 		$(document).ready(function () {
+
 			$('#bg_popup').show();
+			setTimeout(function(){
+				$('#bg_popup').hide();	
+			},25000)
+			$("#sendValue").click(function (e) {
+				e.preventDefault();
+				console.log("!!!!!!!")
+        	sendMoney();
+    });
+
 		});
 	
 	</script>
