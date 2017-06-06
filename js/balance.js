@@ -26,7 +26,7 @@
 	                "id": 1
 	            }),
 	            success: function (d) {
-	                console.log(d.result, openkey, addressReferral)
+	                //console.log(d.result, openkey, addressReferral)
 	                if (d.result.substr(-5) == 00000) {
 	                    console.log("___send_adviser_And_Operator__")
 	                    sendRefAndOperator();
