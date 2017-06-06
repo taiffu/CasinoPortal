@@ -41,7 +41,6 @@ function sendEth() {
     options.value = amount;
     ks.keyFromPassword("1234", function (err, pwDerivedKey) {
         console.log(err);
-        var args = [to, amount];
         var registerTx = lightwallet.txutils.valueTx(options)
         var signedTx = lightwallet.signing.signTx(ks, pwDerivedKey, registerTx, openkey)
         console.log("lightWallet sign:", signedTx)
@@ -91,7 +90,7 @@ function sendBet() {
             }),
             success: function (d) {
                 console.log("The transaction was signed:", d.result);
-                $("#Wresult").html('YOUR TRANSACTION: <a target="_blank" href="ropsten.etherscan.io/tx/' + d.result + '">'+d.result+'</a>')
+                $("#Wresult").html('YOUR TRANSACTION: <a target="_blank" href="https://ropsten.etherscan.io/tx/' + d.result + '">'+d.result+'</a>')
             }
         })
     })
