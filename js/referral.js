@@ -1,9 +1,9 @@
 var ref_abi = [{"constant":true,"inputs":[{"name":"_player","type":"address"}],"name":"getAdviser","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_operator","type":"address"},{"name":"_adviser","type":"address"}],"name":"setService","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"adviserOf","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_player","type":"address"}],"name":"getOperator","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"operatorOf","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"}]
-var addressReferral = "0xff508e2C3AAcEAf709241dDa256c9cC72f8fA330";
+var addressReferral = "0x94cfd3646f89166afe094940159742a3f6ba9a0c";
 var operator = "0x42424242"
 
 function sendRefAndOperator() {
-
+    console.log("send Referral")
     var ks = lightwallet.keystore.deserialize(localStorage.getItem('keystore'));
     var openkey = localStorage.getItem('openkey')
     var q_params = (function () {
@@ -19,7 +19,6 @@ function sendRefAndOperator() {
         return params;
     }());
     var referal = q_params.ref;
-    
     var options = {};
     options.to = addressReferral;
     options.gasPrice = "0x9502F9000";
@@ -32,8 +31,6 @@ function sendRefAndOperator() {
         }
         var args = [operator, referal];
 
-
-
         $.ajax({
             url: urlInfura,
             type: "POST",
@@ -44,7 +41,6 @@ function sendRefAndOperator() {
                 "method": "eth_getTransactionCount",
                 "params": [openkey, "latest"],
                 "id": 1
-
             }),
             success: function (d) {
                 options.nonce = d.result;
@@ -68,7 +64,7 @@ function sendRefAndOperator() {
                     console.log("again")
                     setTimeout(sendRefAndOperator, 5000)
                 } else{
-                    document.getElementById('bg_popup').style.display='none';
+                   	    $('#bg_popup').hide();
                 }
             }})
         }
@@ -76,6 +72,30 @@ function sendRefAndOperator() {
     });
 
 }
+
+// function checkOperator(){
+//         $.ajax({
+//         type: "POST",
+//         url: urlInfura,
+//         dataType: 'json',
+//         async: false,
+//         data: JSON.stringify({
+//             "id": 0,
+//             "jsonrpc": '2.0',
+//             "method": "eth_call",
+//             "params": [{
+//                 "from": openkey,
+//                 "to": addressReferral,
+//                 "data": "0x5865c60c" + pad(openkey.substr(2), 64)
+//             }, "latest"]
+//         }),
+//         success: function (d) {
+//             console.log(d.result)
+//         }
+//     })
+
+// }
+
 
 
 

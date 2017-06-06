@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"time"
 
+	infura "github.com/INFURA/go-libs/jsonrpc_client"
 	"github.com/antonholmquist/jason"
 	"github.com/gorilla/websocket"
 )
@@ -20,7 +21,9 @@ var clients = make(map[*websocket.Conn]bool) // connected clients
 var broadcast = make(chan Message)
 var stop = make(chan bool)
 var url = "https://ropsten.infura.io/JCnK5ifEPH9qcQkX0Ahl"
-var lastTx []Message
+var lastTx [10]Message
+var j = 0
+var Unconfirmed []string
 
 type logsParams struct {
 	fromBlock string
@@ -73,7 +76,8 @@ func getInfo(address string, stop chan bool) {
 				} else {
 					lastBlock, _ = o[len(o)-1].GetString("blockNumber")
 					d, _ := strconv.ParseInt(lastBlock, 0, 64)
-					lastBlock = "0x" + strconv.FormatInt(d+1, 16)
+					fmt.Println("BLOCK:", d)
+					lastBlock = "0x" + strconv.FormatInt(d-1000, 16)
 
 					for _, friend := range o {
 						data, _ := friend.GetString("data")
@@ -81,7 +85,7 @@ func getInfo(address string, stop chan bool) {
 						gameID := data[2:len(data)]
 						info := getInfoByID(address, gameID)
 						mes := Message{tx, info}
-						lastTx = append(lastTx, mes)
+						addLastTx(mes)
 						broadcast <- mes
 						fmt.Println("MESSAGE:", tx)
 					}
@@ -91,7 +95,17 @@ func getInfo(address string, stop chan bool) {
 
 		}
 	}
+}
 
+func addLastTx(m Message) {
+	d, _ := strconv.ParseInt(m.Data[322:386], 0, 64)
+	if d != 0 {
+		lastTx[j] = m
+		j++
+		if j == 10 {
+			j = 0
+		}
+	}
 }
 
 func getInfoByID(address string, id string) string {
@@ -107,6 +121,10 @@ func getInfoByID(address string, id string) string {
 		} else {
 			v, _ := jason.NewObjectFromReader(resp.Body)
 			o, _ := v.GetString("result")
+			d, _ := strconv.ParseInt(o[322:386], 0, 64)
+			if d == 0 {
+				Unconfirmed = append(Unconfirmed, id)
+			}
 			return o
 		}
 	}
@@ -142,13 +160,8 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendLastGame(w *websocket.Conn) {
-	fmt.Println("________LAST___MESSAGE____________:", len(lastTx))
-	if len(lastTx) == 0 {
-		// fmt.Println("NULL")
-	} else {
-		fmt.Println("________!!____________:", len(lastTx))
-		for i := (len(lastTx) - 10); i < len(lastTx); i++ {
-			fmt.Println("mes:", lastTx[i], i)
+	for i := 0; i < 10; i++ {
+		if lastTx[i].Data != "" {
 			err := w.WriteJSON(lastTx[i])
 			if err != nil {
 				log.Printf("error: %v", err)
@@ -191,12 +204,14 @@ func getBankrollers() {
 			go getInfo("0x6a8F29E3D9E25bc683A852765F24eCb4Be5903FC", stop)
 		}
 		time.Sleep(100 * time.Second)
-		//lastTx = []Message{}
 		stop <- true
 	}
 }
 
 func main() {
+
+	infuraClient := infura.EthereumClient{URL: "https://ropsten.infura.io/JCnK5ifEPH9qcQkX0Ahl"}
+	fmt.Println(infuraClient)
 	go handleMessages()
 	go getBankrollers()
 	http.HandleFunc("/ws", handleConnections)
