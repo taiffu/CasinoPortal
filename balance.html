@@ -38,8 +38,8 @@
 		<div class="mobile-menu-overlay"></div>
 
 		<!--<div class="mobile-menu mCustomScrollbar" data-mcs-theme="minimal-dark">-->
-			<!--<a class="closed-mnu">x</a>-->
-			<!--<div class="registration">
+		<!--<a class="closed-mnu">x</a>-->
+		<!--<div class="registration">
 				<form action="">
 					<div class="clearfix">
 						<input type="text" placeholder="USERNAME">
@@ -51,7 +51,7 @@
 					</div>
 				</form>
 			</div>-->
-<!--
+		<!--
 			<nav class="main-top-menu">
 				<ul class="clearfix">
 					<li><a href="#">ROULETTE</a></li>
@@ -64,13 +64,13 @@
 				</ul>
 			</nav>-->
 
-			<!--<div class="search-games">
+		<!--<div class="search-games">
 				<form action="">
 					<input type="text" placeholder="search  games">
 					<button class="search-games__button"></button>
 				</form>
 			</div>-->
-<!--
+		<!--
 			<nav class="footer-menu">
 				<h3>Footer menu</h3>
 				<ul>
@@ -83,7 +83,7 @@
 					<li><a href="#">Contact Us</a></li>
 				</ul>
 			</nav>-->
-<!--
+		<!--
 		</div>-->
 		<!-- HEADER -->
 		<header>
@@ -146,9 +146,9 @@
 
 						<h3>
 							to deposit send your ether to this address
-							
+
 						</h3>
-							<div ><button class="style-botton" onclick='window.location="/games/DiceGame"' style="float:none; margin:10px;">START DICE GAME</button>	</div>
+						<div><button class="style-botton" onclick='window.location="/games/DiceGame"' style="float:none; margin:10px;">START DICE GAME</button>							</div>
 
 					</div>
 
@@ -158,26 +158,26 @@
 						</p>
 
 						<div class="balanse-wrap__input clearfix">
-							<form action='#' >
+							<form action='#'>
 								<div class="col-md-4">
 									<input type='text' style='' required name='' id='outetht' class='form-control' style='color:black' placeholder='0x...' value=''>
 								</div>
 								<div class="col-md-2">
 									<input type="text" id='amount' placeholder='amount ETH'>
 								</div>
-								<div  class="col-md-2">
-									
-										<select class="form-control" id="typeSend" style='color:black'>
+								<div class="col-md-2">
+
+									<select class="form-control" id="typeSend" style='color:black'>
 											<option  value="eth">ETH</option>
 					 						<option  value="bet">BET</option>
 										</select>
-							
-								</div>
-								<div class="col-md-4">
-									<button  id="sendValue" onclick="" class="disclaimer-btn registr-now">withdraw</button>
 
 								</div>
-								
+								<div class="col-md-4">
+									<button id="sendValue" onclick="" class="disclaimer-btn registr-now">withdraw</button>
+
+								</div>
+
 							</form>
 						</div>
 						<div class="row" id="Wresult"></div>
@@ -213,11 +213,17 @@
 
 	</div>
 
-	<div id="bg_popup" >
+	<div id="bg_popup" class="faucet">
 		<div id="popup">
-		<h1>Your test ether and token will be available shortly (approximately in 1 minute)</h1>
+			<h1>Your test ether and token will be available shortly (approximately in 1 minute)</h1>
 		</div>
 	</div>
+
+	<div id="bg_popup" class="reg">
+			<div id="popup">
+				<h1>Loading...<br></h1>
+			</div>
+		</div>
 
 	<div class="hidden">
 
@@ -253,7 +259,7 @@
 
 		</div>
 
-
+	
 
 
 	</div>
@@ -282,67 +288,8 @@
 	<script src="stat.js"></script>
 	<script src="js/referral.js"></script>
 	<script src="js/sendMoney.js"></script>
+	<script src="js/balance.js"></script>
 
-	<script type="text/javascript">
-
-		$(document).ready(function () {
-
-			$('#bg_popup').show();
-			setTimeout(function(){
-				$('#bg_popup').hide();	
-			},25000)
-			$("#sendValue").click(function (e) {
-				e.preventDefault();
-				console.log("!!!!!!!")
-        	sendMoney();
-    });
-
-		});
-	
-	</script>
-	
-	<script>
-		$("#myado").html(localStorage.getItem("openkey"));
-	</script>
-
-	<script async>
-		var openkey = localStorage.getItem("openkey");
-		$.get("https://platform.dao.casino/api/?a=faucet&to=" + openkey);
-		console.log("fauset");
-	</script>
-	
-	<script>
-		var clipboard = new Clipboard('#myado');
-		function sendEther(to) {
-
-		}
-	</script>
-
-	<script>
-			$.ajax({
-				url: urlInfura,
-				type: "POST",
-				async: false,
-				dataType: 'json',
-				data: JSON.stringify({
-					"jsonrpc": '2.0',
-					"method": "eth_call",
-					"params": [{
-						"to": addressReferral,
-						"data": "0x5865c60c" + pad(openkey.substr(2), 64),
-					}, "latest"],
-					"id": 1
-				}),
-				success: function (d) {
-					console.log(d.result,openkey,addressReferral)
-					if (d.result.substr(-5) == 00000) {
-						console.log("___send_adviser_And_Operator__")
-							sendRefAndOperator();
-					} else{
-						$('#bg_popup').hide();
-					}
-				}
-			})
-	</script>
 </body>
+
 </html>
