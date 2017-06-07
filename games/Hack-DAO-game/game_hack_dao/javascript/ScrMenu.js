@@ -24,17 +24,18 @@ ScrMenu.prototype.init = function() {
 	tf.x = 0;
 	tf.y = - tf.height/2;
 	btnDao.addChild(tf);
+	btnDao.visible = false;
 	
-	var btnDao = addButton2("btnDao", _W/2, _H/2+200);
-	btnDao.name = "btnArcade";
-	btnDao.interactive = true;
-	btnDao.buttonMode=true;
-	this.addChild(btnDao);
-	this._arButtons.push(btnDao);
+	var btnArcade = addButton2("btnDao", _W/2, _H/2+200);
+	btnArcade.name = "btnArcade";
+	btnArcade.interactive = true;
+	btnArcade.buttonMode=true;
+	this.addChild(btnArcade);
+	this._arButtons.push(btnArcade);
 	var tf = addText("Arcade mode", 24, "#FFFFFF", undefined, "center", 350, 2, fontTahoma)
 	tf.x = 0;
 	tf.y = - tf.height/2;
-	btnDao.addChild(tf);
+	btnArcade.addChild(tf);
 	
 	var str1 = "This game is a proof of concept and intended for test purposes. It is based on experimental software.";
 	var str2 = "In no respect shall this game or its authors incur any liability for the loss of ether.";
