@@ -37,9 +37,9 @@
 
 		<div class="mobile-menu-overlay"></div>
 
-		<div class="mobile-menu mCustomScrollbar" data-mcs-theme="minimal-dark">
-			<a class="closed-mnu">x</a>
-			<div class="registration">
+		<!--<div class="mobile-menu mCustomScrollbar" data-mcs-theme="minimal-dark">-->
+		<!--<a class="closed-mnu">x</a>-->
+		<!--<div class="registration">
 				<form action="">
 					<div class="clearfix">
 						<input type="text" placeholder="USERNAME">
@@ -50,8 +50,8 @@
 						<button class="registr-now">join now</button>
 					</div>
 				</form>
-			</div>
-
+			</div>-->
+		<!--
 			<nav class="main-top-menu">
 				<ul class="clearfix">
 					<li><a href="#">ROULETTE</a></li>
@@ -62,15 +62,15 @@
 					<li><a href="#">PROMOTIONS</a></li>
 					<li><a href="#">EXCHANGE</a></li>
 				</ul>
-			</nav>
+			</nav>-->
 
-			<div class="search-games">
+		<!--<div class="search-games">
 				<form action="">
 					<input type="text" placeholder="search  games">
 					<button class="search-games__button"></button>
 				</form>
-			</div>
-
+			</div>-->
+		<!--
 			<nav class="footer-menu">
 				<h3>Footer menu</h3>
 				<ul>
@@ -82,9 +82,9 @@
 					<li><a href="#">Complaints</a></li>
 					<li><a href="#">Contact Us</a></li>
 				</ul>
-			</nav>
-
-		</div>
+			</nav>-->
+		<!--
+		</div>-->
 		<!-- HEADER -->
 		<header>
 			<div class="wrapper-block__logo">
@@ -146,33 +146,44 @@
 
 						<h3>
 							to deposit send your ether to this address
+
 						</h3>
+						<div><button class="style-botton" onclick='window.location="/games/DiceGame"' style="float:none; margin:10px;">START DICE GAME</button>							</div>
 
 					</div>
 
-					<!--<div style='margin-top:50px' id="withdraw">
+					<div style='margin-top:50px' id="withdraw">
 						<p>
 							To withdraw your ether insert your ethereum address below and click WITHDRAW
 						</p>
 
 						<div class="balanse-wrap__input clearfix">
-							<form action='#' onsubmit='sendEther($("#outetht").val());return false;' method='post'>
-								<div class="col-md-5">
+							<form action='#'>
+								<div class="col-md-4">
 									<input type='text' style='' required name='' id='outetht' class='form-control' style='color:black' placeholder='0x...' value=''>
 								</div>
-								<div class="col-md-3">
+								<div class="col-md-2">
 									<input type="text" id='amount' placeholder='amount ETH'>
 								</div>
-								<div class="col-md-4">
-									<button type='submit' class="disclaimer-btn registr-now">withdraw</button>
+								<div class="col-md-2">
+
+									<select class="form-control" id="typeSend" style='color:black;padding: 7px;'>
+											<option  value="eth">ETH</option>
+					 						<option  value="bet">BET</option>
+										</select>
 
 								</div>
-								<div id='result1'></div>
+								<div class="col-md-4">
+									<button id="sendValue" onclick="" class="disclaimer-btn registr-now">withdraw</button>
+
+								</div>
+
 							</form>
 						</div>
-					</div>-->
-					<script src="js/clipboard.min.js"></script>
-					
+						<div class="row" id="Wresult"></div>
+					</div>
+
+
 				</div>
 			</div>
 		</main>
@@ -180,13 +191,13 @@
 		<!-- FOOTER -->
 		<footer>
 			<div class="container">
-				<div class="footer-open-menu">
+				<!--<div class="footer-open-menu">
 					<a class="open-menu">
 						<span></span>
 						<span></span>
 						<span></span>
 					</a>
-				</div>
+				</div>-->
 				<nav class="footer-menu">
 					<ul>
 						<li><a href="http://dao.casino/">dao.casino</a></li>
@@ -202,12 +213,17 @@
 
 	</div>
 
-	<div id="bg_popup" onclick="document.getElementById('bg_popup').style.display='none'; return false;">
+	<div id="bg_popup" class="faucet">
 		<div id="popup">
-			<a id="setCookie" class="close" href="#" title="Закрыть" onclick="document.getElementById('bg_popup').style.display='none'; return false;">X</a>
 			<h1>Your test ether and token will be available shortly (approximately in 1 minute)</h1>
 		</div>
 	</div>
+
+	<div id="bg_popup" class="reg">
+			<div id="popup">
+				<h1>Loading...<br></h1>
+			</div>
+		</div>
 
 	<div class="hidden">
 
@@ -243,7 +259,7 @@
 
 		</div>
 
-
+	
 
 
 	</div>
@@ -261,7 +277,7 @@
 	<script src="libs/jquery.cookie.js"></script>
 	<script src="libs/jquery.mCustomScrollbar.concat.min.js"></script>
 	<script src="libs/magnific-popup/jquery.magnific-popup.min.js"></script>
-
+	<script src="js/clipboard.min.js"></script>
 	<script src="libs/jquery.cookie.js"></script>
 
 	<script src='https://rawgit.com/ConsenSys/eth-lightwallet/master/dist/lightwallet.min.js'></script>
@@ -270,74 +286,9 @@
 	<script src="js/common.js"></script>
 	<script src="js/erc20call.js"></script>
 	<script src="stat.js"></script>
-
-	<script type="text/javascript">
-		$(document).ready(function () {
-			if ($.cookie("popup") == null) {
-				setTimeout(function () {
-					$("#bg_popup").show();
-					$.cookie("popup", "24house", {
-						expires: 0
-					});
-				}, 1000);
-
-			} else {
-				$("#bg_popup").hide();
-			}
-		});
-	</script>
-	<script>
-		$("#myado").html(localStorage.getItem("openkey"));
-	</script>
-	<script src='https://rawgit.com/ethereumjs/browser-builds/master/dist/ethereumjs-all.js' async></script>
-	<script>
-						var clipboard = new Clipboard('#myado');
-						var openkey = localStorage.getItem("openkey");
-						$.get( "https://platform.dao.casino/api/?a=faucet&to="+openkey);
-						function sendEther(to) {
-
-							var u = 'ropsten.etherscan.io';
-							if (localStorage.getItem("mainnet") == "on") u = 'api.etherscan.io';
-
-							$.get("https://" + u + "/api?module=proxy&action=eth_getTransactionCount&address=" + localStorage.getItem(
-								"openkey") + "&tag=latest&apikey=YourApiKeyToken", function (d) {
-
-								console.log("getNonce", d);
-								var options = {};
-								options.nonce = d.result;
-								//options.data = '0xa9059cbb000000000000000000000000'+to.replace('0x','')+''+pad(amount.toString(16),64);
-								//console.log(options.data);
-								options.to = to;
-								options.gasPrice = "0x737be7600";
-								options.gasLimit = 0x927c0;
-
-
-								if (!$("#amount").val()) $("#amount").val(totalwei / 1000000000000000000);
-
-								options.value = $("#amount").val() * 1000000000000000000 - 20000000000000000; //отнимем на комиссию
-
-								console.log("options", options);
-
-								var tx = new EthJS.Tx(options);
-								tx.sign(EthJS.Buffer.Buffer(localStorage.getItem("privkey"), 'hex'));
-
-								var serializedTx = tx.serialize().toString('hex');
-
-								console.log("getNonce", d);
-
-								//console.log(serializedTx);
-								$.getJSON("https://" + u + "/api?module=proxy&action=eth_sendRawTransaction&hex=" + serializedTx +
-									"&apikey=YourApiKeyToken",
-									function (d) {
-										console.log("eth_sendRawTransaction", d);
-										$("#result1").html("<a href='https://" + ((localStorage.getItem("mainnet") == "on") ? "" : "testnet.") +
-											"etherscan.io/tx/" + d.result + "'>" + d.result + "</a>");
-									});
-
-
-							}, "json");
-						}
-					</script>
+	<script src="js/referral.js"></script>
+	<script src="js/sendMoney.js"></script>
+	<script src="js/balance.js"></script>
 
 </body>
 </html>

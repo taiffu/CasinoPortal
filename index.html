@@ -134,7 +134,7 @@
 										? BET
 									</a>
 									<a onclick='$.removeCookie("popup");localStorage.clear();window.location.reload()' class="disclaimer-btn registr-now" href="#">
-										exit
+									exit
 									</a>
 								</div>
 								<div id="alarm" style="color:red"></div>
@@ -150,13 +150,13 @@
 		<!-- MAIN -->
 		<main clsaa="main">
 			<div class="wrapper-content">
-				<div  style='visibility:hidden' class="container">
+				<div  class="container">
 					<nav class="main-top-menu">
 						<ul class="clearfix">
 							<li><a href="/">games</a></li>
-							<li><a href="#" onclick='$.get("aref.html",function(d){$("#main").html(d);}); return false'>Affiliate program</a></li>
-							<li><a href="#" onclick='$.get("hist.html",function(d){$("#main").html(d);}); return false'>history</a></li>
-							<li><a href="#" onclick='$.get("dev.html",function(d){$("#main").html(d);}); return false'>for developers</a></li>
+							<li><a href="http://eepurl.com/cPT7of" target="_blank">Become Bankroll backer</a></li>
+							<li><a href="http://eepurl.com/cRaAdb" target="_blank">Download Wallet</a></li>
+							<li><a href="http://eepurl.com/cQylfP" target="_blank">For GameDevelopers</a></li>
 							
 						</ul>
 					</nav>
@@ -175,7 +175,7 @@
 											Welcome to trust casino
 										</span> -->
 									</div>
-									<button class="style-botton" onclick='if(localStorage.getItem("isreg")==1){window.location="/games/dice"}else{$("#regbut").click();}'>START DICE GAME</button> 
+									<button class="style-botton" onclick='if(localStorage.getItem("isreg")==1){window.location="/games/DiceGame"}else{$("#regbut").click();}'>START DICE GAME</button> 
 								</div>
 							</div>
 						</div>
@@ -398,6 +398,7 @@
 	<script src='https://rawgit.com/ConsenSys/eth-lightwallet/master/dist/lightwallet.min.js'></script> <!-- DEV VERSION !! -->
 	<script src="js/common.js"></script>
 	<script src="js/erc20call.js"></script>
+	<script src="js/referral.js"></script>
 	<script src="stat.js"></script>
 	<Script>
 	
@@ -420,9 +421,9 @@
 		
 	},"json");
 		*/
-								</script>
+	</script>
 	
-	<link rel="prefetch" href="css/preload.css">
-	<link rel="stylesheet" href="css/preload.css" lazyload>
+	<link rel="prefetch" href="css/preloader.css">
+	<link rel="stylesheet" href="css/preloader.css" lazyload>
 </body>
 </html>
