@@ -77,7 +77,7 @@ func getInfo(address string, stop chan bool) {
 					lastBlock, _ = o[len(o)-1].GetString("blockNumber")
 					d, _ := strconv.ParseInt(lastBlock, 0, 64)
 					fmt.Println("BLOCK:", d)
-					lastBlock = "0x" + strconv.FormatInt(d-1000, 16)
+					lastBlock = "0x" + strconv.FormatInt(d-1, 16)
 
 					for _, friend := range o {
 						data, _ := friend.GetString("data")
