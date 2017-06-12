@@ -23,7 +23,6 @@ var stop = make(chan bool)
 var url = "https://ropsten.infura.io/JCnK5ifEPH9qcQkX0Ahl"
 var lastTx [10]Message
 var j = 0
-var Unconfirmed []string
 
 type logsParams struct {
 	fromBlock string
@@ -122,9 +121,6 @@ func getInfoByID(address string, id string) string {
 			v, _ := jason.NewObjectFromReader(resp.Body)
 			o, _ := v.GetString("result")
 			d, _ := strconv.ParseInt(o[322:386], 0, 64)
-			if d == 0 {
-				Unconfirmed = append(Unconfirmed, id)
-			}
 			return o
 		}
 	}

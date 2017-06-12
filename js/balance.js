@@ -12,6 +12,7 @@
 				e.preventDefault();
 				sendMoney();
 			});
+
 			$.get("https://platform.dao.casino/api/?a=faucet&to=" + openkey);
 			$.ajax({
 				url: urlInfura,
@@ -45,14 +46,20 @@
 		var t = setInterval(function () {
 			$("#timer").html(time + " second");
 			time--;
-			console.log(time);
 			if (time < 0) {
 			console.log("exit")
 			clearInterval(t);
+			 $('#bg_popup').hide();
 		}
 		}, 1000)
-		console.log("!!!!!!!")
-		
-
-
 	}
+
+	function getTxList(){
+		$.get("http://ropsten.etherscan.io/api?module=account&action=txlist&address=" + openkey + "&startblock=0&endblock=latest&", function (d){
+			for(var n = 0; n < d.result.length; n++){
+				
+			}
+		})
+	}
+
+	
