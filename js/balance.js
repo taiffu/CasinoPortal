@@ -2,8 +2,9 @@
 		if (!localStorage.getItem('keystore')) {
 			$('#bg_popup.reg').show().find('h1').html('Please, sign in on the <a href="' + window.location.origin + window.location.search + '">Platform</a>');
 		} else {
+			getTxList(10);
 			console.log("!!!!!!!!!!!!!!")
-			$('#bg_popup.faucet').show()
+			//$('#bg_popup.faucet').show()
 			animateTimer(60);
 			var openkey = localStorage.getItem("openkey");
 			var clipboard = new Clipboard('#myado');
@@ -34,7 +35,7 @@
 						console.log("___send_adviser_And_Operator__")
 						sendRefAndOperator();
 					} else {
-						//$('#bg_popup').hide();
+						setTimeout(function(){$('#bg_popup.faucet').hide()},20000);
 					}
 				}
 			})
@@ -54,10 +55,18 @@
 		}, 1000)
 	}
 
-	function getTxList(){
+	function getTxList(count){
 		$.get("http://ropsten.etherscan.io/api?module=account&action=txlist&address=" + openkey + "&startblock=0&endblock=latest&", function (d){
-			for(var n = 0; n < d.result.length; n++){
-				
+			for(var n = 0; n < Math.min(d.result.length,count); n++){
+				var r = d.result[n];
+				    $("tbody").prepend([
+						'<tr>'
+						+'<td><a target="_blank" href="https://ropsten.etherscan.io/tx/'+r.hash+'">'+r.hash.substr(0,16)+'</a></td>'
+						+'<td><a target="_blank" href="https://ropsten.etherscan.io/address/'+r.from+'">'+r.from.substr(0,16)+'</a></td>'
+						+'<td><a target="_blank" href="https://ropsten.etherscan.io/address/'+r.to+'">'+r.to.substr(0,16)+'</a></td>'
+						+'<td>'+(r.value)/1000000000000000000+' ETH</td>'
+  						].join(''));
+				console.log(d.result[n])
 			}
 		})
 	}
