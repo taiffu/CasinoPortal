@@ -2,9 +2,6 @@
 		if (!localStorage.getItem('keystore')) {
 			$('#bg_popup.reg').show().find('h1').html('Please, sign in on the <a href="' + window.location.origin + window.location.search + '">Platform</a>');
 		} else {
-			getTxList(10);
-			$('#bg_popup.faucet').show()
-			animateTimer(60);
 			var openkey = localStorage.getItem("openkey");
 			var clipboard = new Clipboard('#myado');
 			$("#myado").html(localStorage.getItem("openkey"));
@@ -30,11 +27,13 @@
 				success: function (d) {
 					//console.log(d.result, openkey, addressReferral)
 					if (d.result.substr(-5) == 00000) {
+						$('#bg_popup.faucet').show();
+						animateTimer(60);
 						console.log("___send_adviser_And_Operator__")
 						sendRefAndOperator();
 					} else {
-
-						checkBet();
+						getTxList(10);
+						$('#bg_popup.faucet').hide()
 					}
 				}
 			})
@@ -54,32 +53,51 @@
 	}
 
 	function getTxList(count) {
+
+		var timeOptions = {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric',
+			hour: 'numeric',
+			minute: 'numeric',
+			second: 'numeric'
+		};
+
+		var k = 1000000000000000000
 		$.get("http://ropsten.etherscan.io/api?module=account&action=txlist&address=" + openkey + "&startblock=0&endblock=latest&", function (d) {
 			for (var n = 0; n < Math.min(d.result.length, count); n++) {
 				var r = d.result[n];
-				$("tbody").prepend([
-					'<tr>' +
-					'<td><a target="_blank" href="https://ropsten.etherscan.io/tx/' + r.hash + '">' + r.hash.substr(0, 16) + '</a></td>' +
-					'<td><a target="_blank" href="https://ropsten.etherscan.io/address/' + r.from + '">' + r.from.substr(0, 16) + '</a></td>' +
-					'<td><a target="_blank" href="https://ropsten.etherscan.io/address/' + r.to + '">' + r.to.substr(0, 16) + '</a></td>' +
-					'<td>' + (r.value) / 1000000000000000000 + ' ETH</td>'
-				].join(''));
+				if (r.isError != "0") {
+					continue;
+				}
+				switch (r.input.substr(0, 10)) {
+					case '0x':
+						if (r.from == openkey) {
+							$("tbody").prepend(['<tr>' +
+								'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+								'<td>send ' + (r.value) / k + ' ETH to:  <a href="http://ropsten.etherscan.io/address/' + r.to + '" target="_blank"> ' + r.to.substr(0, 24) + '...</td>' +
+								'<td><a  href="http://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+								'</tr>'
+							].join(''));
+						} else {
+							$("tbody").prepend(['<tr>' +
+								'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+								'<td>got ' + (r.value) / k + ' Eth from: <a href="http://ropsten.etherscan.io/address/' + r.from + '" target="_blank">' + r.from.substr(0, 24) + '...</td>' +
+								'<td><a  href="http://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+								'</tr>'
+							].join(''));
+						}
+						break;
+					case '0x29eae053':
+						$("tbody").prepend(['<tr>' +
+							'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+							'<td> select service </td>' +
+							'<td><a  href="http://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+							'</tr>'
+						].join(''));
+						break;
+				}
 			}
+
 		})
 	}
-
-	function checkBet() {
-		var b = parseFloat($('#balance').html().replace(" BET", ""));
-		console.log("b: " + b)
-		setTimeout(function () {
-			var n = parseFloat($('#balance').html().replace(" BET", ""));
-			console.log("n: " + n)
-			if (b != n && !isNaN(b)) {
-				$('#bg_popup.faucet').hide();
-				return;
-			} else {
-				checkBet();
-			}
-		}, 2000)
-
-	};
