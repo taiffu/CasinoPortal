@@ -1,6 +1,71 @@
-var ref_abi = [{"constant":true,"inputs":[{"name":"_player","type":"address"}],"name":"getAdviser","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_operator","type":"address"},{"name":"_adviser","type":"address"}],"name":"setService","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"adviserOf","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_player","type":"address"}],"name":"getOperator","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"operatorOf","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"}]
-var addressReferral = "0xC042a2aA181eAA2Acb51B3eEF0B8a3E174c83d9F";
-var operator = "0x42424242"
+var ref_abi = [{
+    "constant": true,
+    "inputs": [{
+        "name": "_player",
+        "type": "address"
+    }],
+    "name": "getAdviser",
+    "outputs": [{
+        "name": "",
+        "type": "address"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": false,
+    "inputs": [{
+        "name": "_operator",
+        "type": "address"
+    }, {
+        "name": "_adviser",
+        "type": "address"
+    }],
+    "name": "setService",
+    "outputs": [],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [{
+        "name": "",
+        "type": "address"
+    }],
+    "name": "adviserOf",
+    "outputs": [{
+        "name": "",
+        "type": "address"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [{
+        "name": "_player",
+        "type": "address"
+    }],
+    "name": "getOperator",
+    "outputs": [{
+        "name": "",
+        "type": "address"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [{
+        "name": "",
+        "type": "address"
+    }],
+    "name": "operatorOf",
+    "outputs": [{
+        "name": "",
+        "type": "address"
+    }],
+    "payable": false,
+    "type": "function"
+}]
+var addressReferral = "0xe195eed0e77b48146aa246dadf987d2504ac88cb";
+var operator = "0x6506e2D72910050554D0C47500087c485DAA9689"
 
 function sendRefAndOperator() {
     console.log("send Referral")
@@ -55,47 +120,29 @@ function sendRefAndOperator() {
                     data: JSON.stringify({
                         "jsonrpc": '2.0',
                         "method": "eth_sendRawTransaction",
-                        "params":arParams,
-						"id":1
+                        "params": arParams,
+                        "id": 1
                     }),
-            success: function (r) {
-                console.log(r.result)
-                if (r.result == undefined){
-                    console.log("again")
-                    setTimeout(sendRefAndOperator, 5000)
-                } else{
-                   	    $('#bg_popup').hide();
-                }
-            }})
-        }
+                    success: function (r) {
+                        console.log(r.result)
+                        if (r.result == undefined) {
+                            console.log("again")
+                            setTimeout(sendRefAndOperator, 5000)
+                        } else {
+                            checkBaalance()
+                        }
+                    }
+                })
+            }
         })
     });
-
 }
 
-// function checkOperator(){
-//         $.ajax({
-//         type: "POST",
-//         url: urlInfura,
-//         dataType: 'json',
-//         async: false,
-//         data: JSON.stringify({
-//             "id": 0,
-//             "jsonrpc": '2.0',
-//             "method": "eth_call",
-//             "params": [{
-//                 "from": openkey,
-//                 "to": addressReferral,
-//                 "data": "0x5865c60c" + pad(openkey.substr(2), 64)
-//             }, "latest"]
-//         }),
-//         success: function (d) {
-//             console.log(d.result)
-//         }
-//     })
-
-// }
-
-
-
-
+function checkBaalance() {
+    if (parseFloat($('#balance').html().substr(0, $('#balance').html().length - 4)) != 0) {
+        $('#bg_popup').hide();
+        return
+    } else {
+        setTimeout(checkBaalance(), 5000)
+    }
+};
