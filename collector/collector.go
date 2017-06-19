@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"time"
 
-	infura "github.com/INFURA/go-libs/jsonrpc_client"
 	"github.com/antonholmquist/jason"
 	"github.com/gorilla/websocket"
 )
@@ -77,11 +76,11 @@ func getInfo(address string, stop chan bool) {
 					d, _ := strconv.ParseInt(lastBlock, 0, 64)
 					fmt.Println("BLOCK:", d)
 					lastBlock = "0x" + strconv.FormatInt(d-1, 16)
-
 					for _, friend := range o {
 						data, _ := friend.GetString("data")
 						tx, _ := friend.GetString("transactionHash")
 						gameID := data[2:len(data)]
+						fmt.Println("__!___:", address, gameID)
 						info := getInfoByID(address, gameID)
 						mes := Message{tx, info}
 						addLastTx(mes)
@@ -118,10 +117,15 @@ func getInfoByID(address string, id string) string {
 		if err != nil {
 			fmt.Println("Unable to reach the server.")
 		} else {
+
 			v, _ := jason.NewObjectFromReader(resp.Body)
 			o, _ := v.GetString("result")
-			d, _ := strconv.ParseInt(o[322:386], 0, 64)
-			return o
+
+			//d, _ := strconv.ParseInt(o[322:386], 0, 64)
+			if o != "0x" {
+				return o
+			}
+
 		}
 	}
 
@@ -192,8 +196,10 @@ func getBankrollers() {
 		_ = json.Unmarshal(b, &arr)
 		if len(arr) != 0 {
 			for i, element := range arr {
+
 				go getInfo(element, stop)
 				fmt.Println("address:", element, i)
+
 			}
 		} else {
 			fmt.Println("_________DEFAULT CONTRACT__________________")
@@ -206,8 +212,6 @@ func getBankrollers() {
 
 func main() {
 
-	infuraClient := infura.EthereumClient{URL: "https://ropsten.infura.io/JCnK5ifEPH9qcQkX0Ahl"}
-	fmt.Println(infuraClient)
 	go handleMessages()
 	go getBankrollers()
 	http.HandleFunc("/ws", handleConnections)
