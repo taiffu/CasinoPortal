@@ -236,10 +236,10 @@ div#small-dialog,
 	min-height: 50px;
 	outline: none;
 	color: white;
-	background-color: #c61f1f;
+	background-color: #d08c49;
 	padding: 8px;
 	text-align: center;
-	border: 0; 
+	border: 2px dashed white; 
 }
 
 #small-dialog h1 {
