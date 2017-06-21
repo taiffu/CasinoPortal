@@ -48,10 +48,8 @@ type request struct {
 }
 
 func getInfo(address string, stop chan bool) {
-
 	client := http.Client{}
 	for {
-
 		select {
 		case <-stop:
 			fmt.Println("________STOP_____________")
@@ -68,24 +66,24 @@ func getInfo(address string, stop chan bool) {
 			} else {
 				v, _ := jason.NewObjectFromReader(resp.Body)
 				o, _ := v.GetObjectArray("result")
-
 				if len(o) == 0 {
 					// fmt.Println("NULL")
 				} else {
 					lastBlock, _ = o[len(o)-1].GetString("blockNumber")
 					d, _ := strconv.ParseInt(lastBlock, 0, 64)
-					fmt.Println("BLOCK:", d)
-					lastBlock = "0x" + strconv.FormatInt(d-1, 16)
-					for _, friend := range o {
-						data, _ := friend.GetString("data")
-						tx, _ := friend.GetString("transactionHash")
+					lastBlock = "0x" + strconv.FormatInt(d+1, 16)
+					for _, log := range o {
+						data, _ := log.GetString("data")
+						tx, _ := log.GetString("transactionHash")
 						gameID := data[2:len(data)]
-						fmt.Println("__!___:", address, gameID)
 						info := getInfoByID(address, gameID)
-						mes := Message{tx, info}
-						addLastTx(mes)
-						broadcast <- mes
-						fmt.Println("MESSAGE:", tx)
+
+						if info != "0x" {
+
+							mes := Message{tx, info}
+							addLastTx(mes)
+							broadcast <- mes
+						}
 					}
 				}
 
@@ -96,7 +94,8 @@ func getInfo(address string, stop chan bool) {
 }
 
 func addLastTx(m Message) {
-	d, _ := strconv.ParseInt(m.Data[322:386], 0, 64)
+	d, _ := strconv.ParseInt(m.Data[266:322], 0, 64)
+	fmt.Println("info:", d)
 	if d != 0 {
 		lastTx[j] = m
 		j++
@@ -104,6 +103,7 @@ func addLastTx(m Message) {
 			j = 0
 		}
 	}
+	fmt.Println("info:", lastTx)
 }
 
 func getInfoByID(address string, id string) string {
@@ -117,18 +117,15 @@ func getInfoByID(address string, id string) string {
 		if err != nil {
 			fmt.Println("Unable to reach the server.")
 		} else {
-
 			v, _ := jason.NewObjectFromReader(resp.Body)
 			o, _ := v.GetString("result")
-
 			//d, _ := strconv.ParseInt(o[322:386], 0, 64)
-			if o != "0x" {
-				return o
-			}
+
+			return o
 
 		}
-	}
 
+	}
 }
 
 func handleConnections(w http.ResponseWriter, r *http.Request) {
@@ -196,10 +193,8 @@ func getBankrollers() {
 		_ = json.Unmarshal(b, &arr)
 		if len(arr) != 0 {
 			for i, element := range arr {
-
 				go getInfo(element, stop)
 				fmt.Println("address:", element, i)
-
 			}
 		} else {
 			fmt.Println("_________DEFAULT CONTRACT__________________")
