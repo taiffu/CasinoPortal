@@ -33,12 +33,13 @@ contract Referral {
     }
     
     function setService(address _operator, address _adviser)
-    { 
-        if(adviserOf[msg.sender] == 0 || operatorOf[msg.sender] == 0 )
+    {
+   
+        if(adviserOf[msg.sender] == 0 && operatorOf[msg.sender] == 0 && _operator != 0 )
         {
             operatorCount[_operator]++;
             operatorOf[msg.sender] = _operator;
-            if(_adviser !=0)
+            if(_adviser != 0)
             {
                 adviserCount[_adviser]++;
                 adviserOf[msg.sender] = _adviser;

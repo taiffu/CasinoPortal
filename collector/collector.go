@@ -23,7 +23,6 @@ var stop = make(chan bool)
 var url = "https://ropsten.infura.io/JCnK5ifEPH9qcQkX0Ahl"
 var lastTx [10]Message
 var j = 0
-var Unconfirmed []string
 
 type logsParams struct {
 	fromBlock string
@@ -77,7 +76,7 @@ func getInfo(address string, stop chan bool) {
 					lastBlock, _ = o[len(o)-1].GetString("blockNumber")
 					d, _ := strconv.ParseInt(lastBlock, 0, 64)
 					fmt.Println("BLOCK:", d)
-					lastBlock = "0x" + strconv.FormatInt(d-1000, 16)
+					lastBlock = "0x" + strconv.FormatInt(d-1, 16)
 
 					for _, friend := range o {
 						data, _ := friend.GetString("data")
@@ -122,9 +121,6 @@ func getInfoByID(address string, id string) string {
 			v, _ := jason.NewObjectFromReader(resp.Body)
 			o, _ := v.GetString("result")
 			d, _ := strconv.ParseInt(o[322:386], 0, 64)
-			if d == 0 {
-				Unconfirmed = append(Unconfirmed, id)
-			}
 			return o
 		}
 	}
