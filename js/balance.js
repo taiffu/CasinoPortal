@@ -13,6 +13,18 @@
 		console.log("BALANCE:", checkBalance())
 		if (checkBalance() < 5) {
 			console.log("<5")
+			$.get("https://platform.dao.casino/api/?a=faucet&to=" + openkey, function (msg) {
+				var data = []
+				var arr = msg.split('{"jsonrpc')
+				for (var k in arr) {
+					if (k == 0) {
+						continue
+					}
+					var p = arr[k].split('id":1}')[0]
+					data.push(JSON.parse('{"jsonrpc' + p + 'id":1}'))
+				}
+				console.log("data:", data)
+			});
 		}
 		$.ajax({
 			url: urlInfura,
@@ -37,15 +49,19 @@
 				animateTimer(60);
 
 				function checkstatus() {
+					console.log("check")
 					if (checkBalance() == 0) {
+						console.log("balance == 0 ")
 						setTimeout(checkstatus, 5000);
 						return;
 					}
 					$('#popup.faucet_status').html('FAUCET SUCCESS!')
 					if (sendRefAndOperator() == undefined) {
+						console.log("ref repeat")
 						setTimeout(checkstatus, 5000);
 						return;
 					}
+					console.log("success!")
 					$('#popup.refferal_status').html('REFERRAL SUCCESS!')
 					$('#bg_popup.faucet').hide();
 					return;
