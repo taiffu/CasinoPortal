@@ -42,26 +42,22 @@ $(document).ready(function () {
 			function checkstatus() {
 
 				if (checkBalance() == 0) {
-					console.log("balance = 0 ")
+					console.log("ETH = 0 ")
 					setTimeout(checkstatus, 5000);
 					return;
 				}
-				$('#faucet_status').html('FAUCET SUCCESS!')
-				if (sendRefAndOperator(function (result) {
-						if (result == undefined) {
-							return true;
-						}
-					})) {
-
+				$('#eth_status').html('ETH SUCCESS!')
+				if (callERC20('balanceOf', openkey) == 0) {
+					console.log("BET = 0 ")
 					setTimeout(checkstatus, 5000);
 					return;
 				}
 				console.log("success!")
-				$('#refferal_status').html('REFERRAL SUCCESS!')
+				$('#bet_status').html('BET SUCCESS!')
 				$('#bg_popup.faucet').hide();
-				faucet();
 				return;
 			}
+
 			checkstatus()
 		}
 	})
@@ -119,6 +115,8 @@ function checkBalance() {
 	})
 	return result;
 }
+
+
 
 function getTxList(count) {
 

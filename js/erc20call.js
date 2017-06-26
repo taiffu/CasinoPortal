@@ -282,7 +282,7 @@ function callERC20(callname, adr) {
             }, "latest"]
         }),
         success: function (d) {
-            result = hexToNum(d.result);
+            result = hexToNum(d.result)/100000000;
         }
     });
     return result;
