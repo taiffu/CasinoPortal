@@ -17,7 +17,7 @@ if (checkBalance() < 5) {
 	faucet();
 }
 
-if (checkBalance() != 0 && callERC20('balanceOf', openkey) != 0) {
+if (checkBalance() != 0 || callERC20('balanceOf', openkey) != 0) {
 	getTxList(10);
 	return;
 }
@@ -71,7 +71,7 @@ function animateTimer(second) {
 		$("#timer").html(time + " second");
 		time--;
 		if (time < 0) {
-			if(checkBalance() == 0){
+			if(checkBalance() == 0 || callERC20('balanceOf', openkey) == 0){
 				window.location.reload();
 			}
 			clearInterval(t);
