@@ -17,26 +17,7 @@ if (checkBalance() < 5) {
 	faucet();
 }
 
-// $.ajax({
-// 	url: urlInfura,
-// 	type: "POST",
-// 	async: false,
-// 	dataType: 'json',
-// 	data: JSON.stringify({
-// 		"jsonrpc": '2.0',
-// 		"method": "eth_call",
-// 		"params": [{
-// 			"to": addressReferral,
-// 			"data": "0x5865c60c" + pad(openkey.substr(2), 64),
-// 		}, "latest"],
-// 		"id": 1
-// 	}),
-// 	success: function (d) {
-// 		if (d.result.substr(-5) != 00000) {
-// 			getTxList(10);
-// 			return;
-// 		}
-if (checkBalance() != 0) {
+if (checkBalance() != 0 && callERC20('balanceOf', openkey) != 0) {
 	getTxList(10);
 	return;
 }
