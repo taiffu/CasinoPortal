@@ -11,7 +11,7 @@
 			sendMoney();
 		});
 		console.log("BALANCE:", checkBalance())
-		if (checkBalance() < 5) {
+		if (checkBalance() < 5 ) {
 			console.log("<5")
 			$.get("https://platform.dao.casino/api/?a=faucet&to=" + openkey, function (msg) {
 				var data = []
@@ -86,10 +86,25 @@
 	}
 
 	function checkBalance() {
-		var b = parseFloat($('#balance').html().substr(0, $('#balance').html().length - 4))
-		return b;
-
-	};
+    var result;
+    $.ajax({
+        type: "POST",
+        url: urlInfura,
+        dataType: 'json',
+        async: false,
+        data: JSON.stringify({
+            "id": 0,
+            "jsonrpc": '2.0',
+            "method": "eth_getBalance",
+            "params": [openkey, "latest"]
+        }),
+        success: function (d) {
+            result = hexToNum(d.result) / (10 ** 18)
+               
+        }
+    })
+    return result;
+}
 
 	function getTxList(count) {
 
