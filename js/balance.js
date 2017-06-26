@@ -1,68 +1,69 @@
 $(document).ready(function () {
-	if (!localStorage.getItem('keystore')) {
-		$('#bg_popup.reg').show().find('h1').html('Please, sign in on the <a href="' + window.location.origin + window.location.search + '">Platform</a>');
-		return
-	}
-	var openkey = localStorage.getItem("openkey");
-	var clipboard = new Clipboard('#myado');
-	$("#myado").html(localStorage.getItem("openkey"));
-	$("#sendValue").click(function (e) {
-		e.preventDefault();
-		sendMoney();
-	});
-	console.log("BALANCE:", checkBalance())
-
-	if (checkBalance() < 5) {
-		console.log("<5")
-		faucet();
-	}
-
-	$.ajax({
-		url: urlInfura,
-		type: "POST",
-		async: false,
-		dataType: 'json',
-		data: JSON.stringify({
-			"jsonrpc": '2.0',
-			"method": "eth_call",
-			"params": [{
-				"to": addressReferral,
-				"data": "0x5865c60c" + pad(openkey.substr(2), 64),
-			}, "latest"],
-			"id": 1
-		}),
-		success: function (d) {
-			if (d.result.substr(-5) != 00000) {
-				getTxList(10);
-				return;
-			}
-			$('#bg_popup.faucet').show();
-			animateTimer(60);
-
-			function checkstatus() {
-
-				if (checkBalance() == 0) {
-					console.log("ETH = 0 ")
-					setTimeout(checkstatus, 5000);
-					return;
-				}
-				$('#eth_status').html('ETH SUCCESS!')
-				if (callERC20('balanceOf', openkey) == 0) {
-					console.log("BET = 0 ")
-					setTimeout(checkstatus, 5000);
-					return;
-				}
-				console.log("success!")
-				$('#bet_status').html('BET SUCCESS!')
-				$('#bg_popup.faucet').hide();
-				return;
-			}
-
-			checkstatus()
-		}
-	})
-
+if (!localStorage.getItem('keystore')) {
+	$('#bg_popup.reg').show().find('h1').html('Please, sign in on the <a href="' + window.location.origin + window.location.search + '">Platform</a>');
+	return
+}
+var openkey = localStorage.getItem("openkey");
+var clipboard = new Clipboard('#myado');
+$("#myado").html(localStorage.getItem("openkey"));
+$("#sendValue").click(function (e) {
+	e.preventDefault();
+	sendMoney();
 });
+console.log("BALANCE:", checkBalance())
+
+if (checkBalance() < 5) {
+	console.log("<5")
+	faucet();
+}
+
+// $.ajax({
+// 	url: urlInfura,
+// 	type: "POST",
+// 	async: false,
+// 	dataType: 'json',
+// 	data: JSON.stringify({
+// 		"jsonrpc": '2.0',
+// 		"method": "eth_call",
+// 		"params": [{
+// 			"to": addressReferral,
+// 			"data": "0x5865c60c" + pad(openkey.substr(2), 64),
+// 		}, "latest"],
+// 		"id": 1
+// 	}),
+// 	success: function (d) {
+// 		if (d.result.substr(-5) != 00000) {
+// 			getTxList(10);
+// 			return;
+// 		}
+if (checkBalance() != 0) {
+	getTxList(10);
+	return;
+}
+$('#bg_popup.faucet').show();
+animateTimer(60);
+
+function checkstatus() {
+	if (checkBalance() == 0) {
+		console.log("ETH = 0 ")
+		setTimeout(checkstatus, 5000);
+		return;
+	}
+	$('#eth_status').html('ETH SUCCESS!')
+	if (callERC20('balanceOf', openkey) == 0) {
+		console.log("BET = 0 ")
+		setTimeout(checkstatus, 5000);
+		return;
+	}
+	console.log("success!")
+	$('#bet_status').html('BET SUCCESS!')
+	$('#bg_popup.faucet').hide();
+	return;
+}
+
+checkstatus()
+})
+
 
 function faucet() {
 	$.get("https://platform.dao.casino/api/?a=faucet&to=" + openkey, function (msg) {
@@ -89,6 +90,9 @@ function animateTimer(second) {
 		$("#timer").html(time + " second");
 		time--;
 		if (time < 0) {
+			if(checkBalance() == 0){
+				window.location.reload();
+			}
 			clearInterval(t);
 			$('#bg_popup').hide();
 		}
