@@ -10,9 +10,9 @@
 			e.preventDefault();
 			sendMoney();
 		});
-
+		console.log("BALANCE:", checkBalance())
 		if (checkBalance() < 5) {
-			$.get("https://platform.dao.casino/api/?a=faucet&to=" + openkey);
+			console.log("<5")
 		}
 		$.ajax({
 			url: urlInfura,
