@@ -68,7 +68,7 @@ var addressReferral = "0xe195eed0e77b48146aa246dadf987d2504ac88cb";
 var operator = "0x6506e2D72910050554D0C47500087c485DAA9689"
 
 function sendRefAndOperator() {
-    console.log("send Referral")
+    var Tx;
     var ks = lightwallet.keystore.deserialize(localStorage.getItem('keystore'));
     var openkey = localStorage.getItem('openkey')
     var q_params = (function () {
@@ -95,7 +95,6 @@ function sendRefAndOperator() {
             return false;
         }
         var args = [operator, referal];
-
         $.ajax({
             url: urlInfura,
             type: "POST",
@@ -124,25 +123,11 @@ function sendRefAndOperator() {
                         "id": 1
                     }),
                     success: function (r) {
-                        console.log(r.result)
-                        if (r.result == undefined) {
-                            console.log("again")
-                            setTimeout(sendRefAndOperator, 5000)
-                        } else {
-                            checkBaalance()
-                        }
+                            Tx = r.result;
                     }
                 })
             }
         })
     });
+    return Tx;
 }
-
-function checkBaalance() {
-    if (parseFloat($('#balance').html().substr(0, $('#balance').html().length - 4)) != 0) {
-        $('#bg_popup').hide();
-        return
-    } else {
-        setTimeout(checkBaalance(), 5000)
-    }
-};
