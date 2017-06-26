@@ -59,7 +59,7 @@ $(document).ready(function () {
 				console.log("success!")
 				$('#refferal_status').html('REFERRAL SUCCESS!')
 				$('#bg_popup.faucet').hide();
-
+				faucet();
 				return;
 			}
 			checkstatus()
