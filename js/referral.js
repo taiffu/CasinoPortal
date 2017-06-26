@@ -67,8 +67,7 @@ var ref_abi = [{
 var addressReferral = "0xe195eed0e77b48146aa246dadf987d2504ac88cb";
 var operator = "0x6506e2D72910050554D0C47500087c485DAA9689"
 
-function sendRefAndOperator() {
-    var Tx;
+function sendRefAndOperator(callback) {
     var ks = lightwallet.keystore.deserialize(localStorage.getItem('keystore'));
     var openkey = localStorage.getItem('openkey')
     var q_params = (function () {
@@ -123,11 +122,10 @@ function sendRefAndOperator() {
                         "id": 1
                     }),
                     success: function (r) {
-                            Tx = r.result;
+                        callback(r.result);
                     }
                 })
             }
         })
     });
-    return Tx;
 }

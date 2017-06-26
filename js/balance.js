@@ -11,7 +11,7 @@
 			sendMoney();
 		});
 		console.log("BALANCE:", checkBalance())
-		if (checkBalance() < 5 ) {
+		if (checkBalance() < 5) {
 			console.log("<5")
 			$.get("https://platform.dao.casino/api/?a=faucet&to=" + openkey, function (msg) {
 				var data = []
@@ -23,7 +23,7 @@
 					var p = arr[k].split('id":1}')[0]
 					data.push(JSON.parse('{"jsonrpc' + p + 'id":1}'))
 				}
-				console.log("data:", data)
+				console.log("betTX:", data[0].result, "ethTx:", data[1].result)
 			});
 		}
 		$.ajax({
@@ -55,14 +55,18 @@
 						setTimeout(checkstatus, 5000);
 						return;
 					}
-					$('#popup.faucet_status').html('FAUCET SUCCESS!')
-					if (sendRefAndOperator() == undefined) {
+					$('#faucet_status').html('FAUCET SUCCESS!')
+					if (sendRefAndOperator(function (result) {
+							if (result == undefined) {
+								return true;
+							}
+						})) {
 						console.log("ref repeat")
 						setTimeout(checkstatus, 5000);
 						return;
 					}
 					console.log("success!")
-					$('#popup.refferal_status').html('REFERRAL SUCCESS!')
+					$('#refferal_status').html('REFERRAL SUCCESS!')
 					$('#bg_popup.faucet').hide();
 					return;
 				}
@@ -86,25 +90,25 @@
 	}
 
 	function checkBalance() {
-    var result;
-    $.ajax({
-        type: "POST",
-        url: urlInfura,
-        dataType: 'json',
-        async: false,
-        data: JSON.stringify({
-            "id": 0,
-            "jsonrpc": '2.0',
-            "method": "eth_getBalance",
-            "params": [openkey, "latest"]
-        }),
-        success: function (d) {
-            result = hexToNum(d.result) / (10 ** 18)
-               
-        }
-    })
-    return result;
-}
+		var result;
+		$.ajax({
+			type: "POST",
+			url: urlInfura,
+			dataType: 'json',
+			async: false,
+			data: JSON.stringify({
+				"id": 0,
+				"jsonrpc": '2.0',
+				"method": "eth_getBalance",
+				"params": [openkey, "latest"]
+			}),
+			success: function (d) {
+				result = hexToNum(d.result) / (10 ** 18)
+
+			}
+		})
+		return result;
+	}
 
 	function getTxList(count) {
 
