@@ -47,8 +47,12 @@ checkstatus()
 
 
 function faucet() {
-	$.get("https://platform.dao.casino/api/?a=faucet&to=" + openkey, function (msg) {
-		var data = []
+
+
+	$.ajax({
+    url: "https://platform.dao.casino/api/?a=faucet&to=" + openkey,
+    success: function(){
+        var data = []
 		var arr = msg.split('{"jsonrpc')
 		for (var k in arr) {
 			if (k == 0) {
@@ -62,7 +66,13 @@ function faucet() {
 			return;
 		}
 		console.log("betTX:", data[0].result, "ethTx:", data[1].result)
-	});
+    },
+	error: function(){
+        console.log("fucet failed")
+    },
+});
+
+
 }
 
 function animateTimer(second) {
@@ -115,7 +125,7 @@ function getTxList(count) {
 	};
 
 	var k = 1000000000000000000
-	$.get("http://ropsten.etherscan.io/api?module=account&action=txlist&address=" + openkey + "&startblock=0&endblock=latest&", function (d) {
+	$.get("https://ropsten.etherscan.io/api?module=account&action=txlist&address=" + openkey + "&startblock=0&endblock=latest&", function (d) {
 		for (var n = 0; n < Math.min(d.result.length, count); n++) {
 			var r = d.result[n];
 			if (r.isError != "0") {
@@ -126,15 +136,15 @@ function getTxList(count) {
 					if (r.from == openkey) {
 						$("tbody").prepend(['<tr>' +
 							'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
-							'<td>send ' + (r.value) / k + ' ETH to:  <a href="http://ropsten.etherscan.io/address/' + r.to + '" target="_blank"> ' + r.to.substr(0, 24) + '...</td>' +
-							'<td><a  href="http://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+							'<td>send ' + (r.value) / k + ' ETH to:  <a href="https://ropsten.etherscan.io/address/' + r.to + '" target="_blank"> ' + r.to.substr(0, 24) + '...</td>' +
+							'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
 							'</tr>'
 						].join(''));
 					} else {
 						$("tbody").prepend(['<tr>' +
 							'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
-							'<td>got ' + (r.value) / k + ' Eth from: <a href="http://ropsten.etherscan.io/address/' + r.from + '" target="_blank">' + r.from.substr(0, 24) + '...</td>' +
-							'<td><a  href="http://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+							'<td>got ' + (r.value) / k + ' Eth from: <a href="https://ropsten.etherscan.io/address/' + r.from + '" target="_blank">' + r.from.substr(0, 24) + '...</td>' +
+							'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
 							'</tr>'
 						].join(''));
 					}
@@ -143,7 +153,7 @@ function getTxList(count) {
 					$("tbody").prepend(['<tr>' +
 						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
 						'<td> select service </td>' +
-						'<td><a  href="http://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+						'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
 						'</tr>'
 					].join(''));
 					break;
