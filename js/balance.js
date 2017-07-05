@@ -1,6 +1,6 @@
 $(document).ready(function () {
 	if (!localStorage.getItem('keystore')) {
-		$('#bg_popup.reg').show().find('h1').html('Please, sign in on the <a href="' + window.location.origin + window.location.search + '">Platform</a>');
+		$('#bg_popup.reg').show().find('h1').html('Please, sign in on the <a href="https://platform.dao.casino">Platform</a>');
 		return
 	}
 	var openkey = localStorage.getItem("openkey");
@@ -40,6 +40,9 @@ $(document).ready(function () {
 		console.log("success!")
 		$('#bet_status').html('BET SUCCESS!')
 		$('#bg_popup.faucet').hide();
+		sendRefAndOperator(function(d){
+			console.log('refTx: ', d)
+		})
 		return;
 	}
 
