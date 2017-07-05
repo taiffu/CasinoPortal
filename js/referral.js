@@ -70,19 +70,7 @@ var operator = "0x6506e2D72910050554D0C47500087c485DAA9689"
 function sendRefAndOperator(callback) {
     var ks = lightwallet.keystore.deserialize(localStorage.getItem('keystore'));
     var openkey = localStorage.getItem('openkey')
-    var q_params = (function () {
-        var params = {};
-        if (window.location.href.split('?').length < 2) {
-            return params;
-        }
-        var parts = window.location.href.split('?')[1].split('&');
-        for (var k in parts) {
-            var kv = parts[k].split('=');
-            params[kv[0]] = kv[1];
-        }
-        return params;
-    }());
-    var referal = q_params.ref;
+    var referal = localStorage.ref;
     var options = {};
     options.to = addressReferral;
     options.gasPrice = "0x9502F9000";

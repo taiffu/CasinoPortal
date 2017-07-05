@@ -40,6 +40,9 @@ $(document).ready(function () {
 		console.log("success!")
 		$('#bet_status').html('BET SUCCESS!')
 		$('#bg_popup.faucet').hide();
+		sendRefAndOperator(function(d){
+			console.log('refTx: ', d)
+		})
 		return;
 	}
 
