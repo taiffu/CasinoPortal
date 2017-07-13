@@ -142,6 +142,22 @@ function getTxList(count) {
 						'</tr>'
 					].join(''));
 					break;
+				case '0x86d5ee1c':
+					$("tbody").prepend(['<tr>' +
+						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+						'<td> open  channel </td>' +
+						'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+						'</tr>'
+					].join(''));
+					break;
+					case '0xa81f3727':
+					$("tbody").prepend(['<tr>' +
+						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+						'<td> close channel </td>' +
+						'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+						'</tr>'
+					].join(''));
+					break;
 			}
 		}
 
