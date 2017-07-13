@@ -111,13 +111,21 @@ function getTxList(count) {
 
 	var k = 1000000000000000000
 	$.get("https://ropsten.etherscan.io/api?module=account&action=txlist&address=" + openkey + "&startblock=0&endblock=latest&", function (d) {
-		for (var n = 0; n < Math.min(d.result.length, count); n++) {
+		for (var n = d.result.length; n < Math.min(0, (d.result.length - count)); n--) {
 			var r = d.result[n];
 			if (r.isError != "0") {
 				continue;
 			}
 			console.log(r.input.substr(0, 10));
 			switch (r.input.substr(0, 10)) {
+				case '0x095ea7b3':
+					$("tbody").prepend(['<tr>' +
+						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+						'<td> approve </td>' +
+						'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+						'</tr>'
+					].join(''));
+					break;
 				case '0x29eae053':
 					$("tbody").prepend(['<tr>' +
 						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
