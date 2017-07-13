@@ -12,7 +12,7 @@ $(document).ready(function () {
 	});
 	console.log("BALANCE ETH:", checkBalance())
 
-	if (checkBalance() < 5) {
+	if (callERC20('balanceOf', openkey) < 5) {
 		console.log("<5")
 		faucet();
 	}
