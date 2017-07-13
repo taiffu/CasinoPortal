@@ -111,7 +111,7 @@ function getTxList(count) {
 
 	var k = 1000000000000000000
 	$.get("https://ropsten.etherscan.io/api?module=account&action=txlist&address=" + openkey + "&startblock=0&endblock=latest&", function (d) {
-		for (var n = d.result.length - 1; n < Math.min(1, (d.result.length - count)); n--) {
+		for (var n = d.result.length - 1; n > Math.max(0, (d.result.length - count)); n--) {
 			var r = d.result[n];
 			if (r.isError != "0") {
 				continue;
@@ -172,3 +172,4 @@ function getTxList(count) {
 
 	})
 }
+
