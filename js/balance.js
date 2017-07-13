@@ -40,7 +40,7 @@ $(document).ready(function () {
 		console.log("success!")
 		$('#bet_status').html('BET SUCCESS!')
 		$('#bg_popup.faucet').hide();
-		sendRefAndOperator(function(d){
+		sendRefAndOperator(function (d) {
 			console.log('refTx: ', d)
 		})
 		return;
@@ -116,7 +116,32 @@ function getTxList(count) {
 			if (r.isError != "0") {
 				continue;
 			}
+			console.log(r.input.substr(0, 10));
 			switch (r.input.substr(0, 10)) {
+				case '0x29eae053':
+					$("tbody").prepend(['<tr>' +
+						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+						'<td> select service </td>' +
+						'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+						'</tr>'
+					].join(''));
+					break;
+				case '0x86d5ee1c':
+					$("tbody").prepend(['<tr>' +
+						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+						'<td> open channel </td>' +
+						'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+						'</tr>'
+					].join(''));
+					break;
+				case '0xa81f3727':
+					$("tbody").prepend(['<tr>' +
+						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+						'<td> close channel </td>' +
+						'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+						'</tr>'
+					].join(''));
+					break;
 				case '0x':
 					if (r.from == openkey) {
 						$("tbody").prepend(['<tr>' +
@@ -133,30 +158,6 @@ function getTxList(count) {
 							'</tr>'
 						].join(''));
 					}
-					break;
-				case '0x29eae053':
-					$("tbody").prepend(['<tr>' +
-						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
-						'<td> select service </td>' +
-						'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
-						'</tr>'
-					].join(''));
-					break;
-				case '0x86d5ee1c':
-					$("tbody").prepend(['<tr>' +
-						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
-						'<td> open  channel </td>' +
-						'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
-						'</tr>'
-					].join(''));
-					break;
-					case '0xa81f3727':
-					$("tbody").prepend(['<tr>' +
-						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
-						'<td> close channel </td>' +
-						'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
-						'</tr>'
-					].join(''));
 					break;
 			}
 		}
