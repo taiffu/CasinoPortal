@@ -119,7 +119,7 @@ function getTxList(count) {
 			console.log(r.input.substr(0, 10));
 			switch (r.input.substr(0, 10)) {
 				case '0x095ea7b3':
-					$("tbody").prepend(['<tr>' +
+					$("tbody").append(['<tr>' +
 						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
 						'<td> approve </td>' +
 						'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
@@ -127,7 +127,7 @@ function getTxList(count) {
 					].join(''));
 					break;
 				case '0x29eae053':
-					$("tbody").prepend(['<tr>' +
+					$("tbody").append(['<tr>' +
 						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
 						'<td> select service </td>' +
 						'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
@@ -135,7 +135,7 @@ function getTxList(count) {
 					].join(''));
 					break;
 				case '0x86d5ee1c':
-					$("tbody").prepend(['<tr>' +
+					$("tbody").append(['<tr>' +
 						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
 						'<td> open channel </td>' +
 						'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
@@ -143,7 +143,7 @@ function getTxList(count) {
 					].join(''));
 					break;
 				case '0xa81f3727':
-					$("tbody").prepend(['<tr>' +
+					$("tbody").append(['<tr>' +
 						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
 						'<td> close channel </td>' +
 						'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
@@ -152,14 +152,14 @@ function getTxList(count) {
 					break;
 				case '0x':
 					if (r.from == openkey) {
-						$("tbody").prepend(['<tr>' +
+						$("tbody").append(['<tr>' +
 							'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
 							'<td>send ' + (r.value) / k + ' ETH to:  <a href="https://ropsten.etherscan.io/address/' + r.to + '" target="_blank"> ' + r.to.substr(0, 24) + '...</td>' +
 							'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
 							'</tr>'
 						].join(''));
 					} else {
-						$("tbody").prepend(['<tr>' +
+						$("tbody").append(['<tr>' +
 							'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
 							'<td>got ' + (r.value) / k + ' Eth from: <a href="https://ropsten.etherscan.io/address/' + r.from + '" target="_blank">' + r.from.substr(0, 24) + '...</td>' +
 							'<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
