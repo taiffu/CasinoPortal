@@ -214,7 +214,7 @@ function getStatistics(game, network) {
     var bankroll;
     var bankroll = callERC20("balanceOf", address);
     //GetLogs(address);
-    $('#bankroll').html(bankroll + " BET");
+    $('#bankroll').html(bankroll.toFixed(3) + " BET");
     $("#total").html(total());
 };
 getStatistics("Dice", "testnet");
