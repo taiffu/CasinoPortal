@@ -1,6 +1,6 @@
 //var urlInfura = "https://ropsten.infura.io/JCnK5ifEPH9qcQkX0Ahl";
 var result;
-var address = "0x9f93bfe34bdac77e4ddc10971b0ab827e9289f00";
+var address = "0xb49f173fec783bc3e538cfd322fb8b1d515c229c";
 
 function GetLogs(addressContract) {
     $.ajax({
@@ -50,7 +50,7 @@ function GetLogs(addressContract) {
                 if (_time > _now - 86400000) {
                     _countBy30Days++;
                     _countBy24Hours++;
-                } 
+                }
                 $("#30days").html(_countBy30Days);
                 $("#24hours").html(_countBy24Hours);
             }
@@ -186,8 +186,8 @@ function getContract(game, network) {
     return result;
 };
 
-function total(){
-        $.ajax({
+function total() {
+    $.ajax({
         type: "POST",
         url: urlInfura,
         dataType: 'json',
@@ -199,7 +199,7 @@ function total(){
             "params": [{
                 "from": openkey,
                 "to": address,
-                "data":  "0xdf257ba3"
+                "data": "0xdf257ba3"
             }, "latest"]
         }),
         success: function (d) {
@@ -214,7 +214,7 @@ function getStatistics(game, network) {
     var bankroll;
     var bankroll = callERC20("balanceOf", address);
     //GetLogs(address);
-    $('#bankroll').html(bankroll/100000000 +" BET");
+    $('#bankroll').html(bankroll + " BET");
     $("#total").html(total());
 };
 getStatistics("Dice", "testnet");
