@@ -134,7 +134,7 @@ function getTxList(count) {
 						'</tr>'
 					].join(''));
 					break;
-				case '0x86d5ee1c':
+				case '0x34a4f35a':
 					$("tbody").append(['<tr>' +
 						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
 						'<td> open channel </td>' +
@@ -142,7 +142,7 @@ function getTxList(count) {
 						'</tr>'
 					].join(''));
 					break;
-				case '0xa81f3727':
+				case '0x2e6eafa6':
 					$("tbody").append(['<tr>' +
 						'<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
 						'<td> close channel </td>' +
