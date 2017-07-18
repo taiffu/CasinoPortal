@@ -87,11 +87,10 @@ if (localStorage.getItem('isreg') != null && !localStorage.getItem('keystore')) 
 }
 
 var secret = lightwallet.keystore.generateRandomSeed();
-var operator = "0x42";
 
 $("#seed").html(secret);
 
-function wallet_open(secretSeed , restore ) {
+function wallet_open(secretSeed, restore) {
 
 	if (secretSeed == secret || restore) {
 		$('#btnContinue').html("wait..");
@@ -123,8 +122,6 @@ function wallet_open(secretSeed , restore ) {
 
 	}
 }
-
-
 
 function setCookie(name, value, options) {
 	options = options || {};
@@ -228,8 +225,6 @@ function rebalance() {
 }
 
 setInterval(rebalance, 5000);
-
-
 
 $.removeCookie = function (key, options) {
 	if ($.cookie(key) === undefined) { // this line is the problem

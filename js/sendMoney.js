@@ -1,6 +1,7 @@
 if(localStorage.getItem('keystore') != null){
 var ks = lightwallet.keystore.deserialize(localStorage.getItem('keystore'));
 }
+
 function sendMoney() {
     if ($("select#typeSend").val() == "eth") {
         sendEth();
