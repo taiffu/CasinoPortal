@@ -214,13 +214,35 @@ function rebalance() {
 					totalwei = d.result;
 
 					$("#balance").html(d.result / 100000000 + " BET");
+					$("#balBET").html(d.result / 100000000 + " BET");
+
 					if (localStorage.getItem("mainnet") == "off" && totalwei == 0) {}
 				}
-			})
+			});
 
-			;
+			$.ajax({
+				type: "POST",
+				url: urlInfura,
+				dataType: 'json',
+				async: false,
+				data: JSON.stringify({
+					"id": 0,
+					"jsonrpc": '2.0',
+					"method": "eth_getBalance",
+					"params": [openkey, "latest"]
+				}),
+				success: function (d) {
+					totalwei = d.result;
 
-		}, 1000);
+
+					$("#balETH").html((d.result / 10 ** 18).toFixed(3) + " ETH");
+
+				}
+			});
+
+
+
+		}, 5000);
 	}
 }
 

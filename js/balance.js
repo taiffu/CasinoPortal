@@ -49,6 +49,7 @@ $(document).ready(function () {
 })
 
 
+
 function faucet() {
 	$.ajax({
 		url: "https://platform.dao.casino/faucet?to=" + openkey,
@@ -116,7 +117,6 @@ function getTxList(count) {
 			if (r.isError != "0") {
 				continue;
 			}
-			console.log(r.input.substr(0, 10));
 			switch (r.input.substr(0, 10)) {
 				case '0x095ea7b3':
 					$("tbody").append(['<tr>' +
