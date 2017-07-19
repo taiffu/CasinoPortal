@@ -5,6 +5,11 @@ $(document).ready(function () {
 		return;
 	}
 
+	if(localStorage.getItem('seed')){
+		$('#secret').html(localStorage.getItem(seed))
+		$('#words').show();
+	}
+
 	var clipboard = new Clipboard('#myado');
 	$("#myado").html(player.openkey);
 
