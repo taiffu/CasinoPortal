@@ -1,4 +1,4 @@
-var result;
+
 var address = "0xb49f173fec783bc3e538cfd322fb8b1d515c229c";
 
 function getContractBalance(addressContract) {

@@ -116,11 +116,11 @@
 									Sign in
 								</a>
 
-								<div id='isreg' style='display:none'>
+								<div id='isreg'>
 									<a class="disclaimer-btn registr-now" id='balance' href="/balance.html">
 										? BET
 									</a>
-									<a onclick='$.removeCookie("popup");localStorage.clear();window.location.reload()' class="disclaimer-btn registr-now" href="#">
+									<a onclick='localStorage.clear();window.location.reload()' class="disclaimer-btn registr-now" href="#">
 										exit
 									</a>
 								</div>
@@ -138,6 +138,14 @@
 			<div class="wrapper-content">
 				<div style='color:white;text-align:center;padding-top:5%;' class="container">
 
+					<div id="words">
+						<h3 style="color:red">
+							PLEASE SAVE YOUR SECRET SEED!
+						</h3>
+							<h2 id="secret" style="display:none"> Lorem ipsum dolor sit amet consectetur adipisicing elit  amet consectetur adipisicing elit</h2>
+							<button  onclick="$('#secret').show()" class="disclaimer-btn registr-now">SHOW 12 words</button>
+					</div>
+
 					<div id="recharge">
 						<h3>
 							Your dao.casino account: (click to copy)
@@ -152,7 +160,7 @@
 
 					</div>
 					<div style='margin-top:50px' id="withdraw">
-						<h3>YOUR BALANCE: <d id="balETH" style="color: #d08c49;"> ? ETH </d> and <d id="balBET" style="color: #d08c49;">? BET</d> </h3>
+						<h3 style="margin-bottom:16px;">YOUR BALANCE: <d id="balETH" style="color: #d08c49;"> ? ETH </d> and <d id="balBET" style="color: #d08c49;">? BET </d></h3> <button id="bt"  onclick=" $(this).html('lol');" class="disclaimer-btn registr-now">faucet</button>
 						<p>
 							To withdraw your ether or BET insert ethereum address below select amount and click WITHDRAW.
 						</p>
@@ -302,12 +310,8 @@
 
 	<script src='https://rawgit.com/ConsenSys/eth-lightwallet/master/dist/lightwallet.min.js'></script>
 	<!-- DEV VERSION !! -->
-	<script src="js/configuration.js"></script>
+
 	<script src="js/common.js"></script>
-	<script src="js/erc20call.js"></script>
-	<script src="stat.js"></script>
-	<script src="js/referral.js"></script>
-	<script src="js/sendMoney.js"></script>
 	<script src="js/balance.js"></script>
 
 </body>

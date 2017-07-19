@@ -1,267 +1,585 @@
-$(document).ready(function () {
-
-	/* POPUP */
-
-	$('.open-register').click(function () {
-		$('.window-open-registr').slideDown();
-		$('#popup-open-text-before').slideDown();
-		$('.window-seed').slideUp();
-		$('.popup-button').slideUp();
-		$('#popup-open-text-after').slideUp();
-	});
-
-	$('.dialog-window-cancel').click(function () {
-		$('.popup-button').slideDown();
-		$('.window-open-registr').slideDown();
-		$('#popup-open-text-after').slideDown();
-		$('.window-seed').slideDown();
-		$('#popup-open-text-before').slideUp();
-		$('.window-open-registr').slideUp();
-	});
-
-	$('.open-dialog-window').click(function () {
-		$('.dialog-content').slideUp();
-		$('.popup-button').slideUp();
-		$('.dialog-window-two').slideDown();
-	});
-
-	$('.dialog-window-cancel-two').click(function () {
-		$('.dialog-window-two').slideUp();
-		$('.popup-button').slideDown();
-	});
-
-	/* AND POPUP */
-
-	$('.toggle-bg input').click(function () {
-		if ($('input#checked-on:checked')) {
-			$('.free-money').toggleClass('free-money__enable');
-			$('.real-money').toggleClass('free-money__disabled');
-		}
-	});
-
-	$('.open-menu').click(function () {
-		$('.mobile-menu').toggleClass('open-mobile-menu');
-		$('.mobile-menu-overlay').toggleClass('open-menu-overlay');
-	});
-
-	$('.mobile-menu-overlay, .closed-mnu').click(function () {
-		$('.mobile-menu').removeClass('open-mobile-menu');
-		$('.mobile-menu-overlay').removeClass('open-menu-overlay');
-	});
-
-	$(".cat-menu").click(function () {
-		$(this).next().slideToggle();
-	});
-
-	// Popup window
-
-	$('.popup-with-move-anim').magnificPopup({
-		type: 'inline',
-
-		fixedContentPos: false,
-		fixedBgPos: true,
-
-		overflowY: 'auto',
-
-		closeBtnInside: true,
-		preloader: false,
-
-		midClick: true,
-		removalDelay: 300,
-		mainClass: 'my-mfp-slide-bottom'
-	});
-
-});
-
-if (localStorage.getItem("isreg")) {
-	$("#isreg").show();
-	$("#regbut").hide();
-} else {
-	$("#isreg").hide();
-	$("#regbut").css("visibility", "visible");
-
-}
-
-if (localStorage.getItem('isreg') != null && !localStorage.getItem('keystore')) {
-	$('#alarm').html("THIS ACCOUNT DOES NOT SUPPORT TOKENS.<br> CREATE A NEW ACCOUNT!")
-}
-
-var secret = lightwallet.keystore.generateRandomSeed();
-
-$("#seed").html(secret);
-
-function wallet_open(secretSeed, restore) {
-
-	if (secretSeed == secret || restore) {
-		$('#btnContinue').html("wait..");
-		var password = "1234";
-		lightwallet.keystore.createVault({
-			password: password,
-			seedPhrase: secretSeed, // Optionally provide a 12-word seed phrase
-		}, function (err, ks) {
-			ks.keyFromPassword(password, function (err, pwDerivedKey) {
-				if (err) throw err;
-				ks.generateNewAddress(pwDerivedKey, 1);
-				var addr = ks.getAddresses()[0];
-				var prv_key = ks.exportPrivateKey(addr, pwDerivedKey);
-				var keystorage = ks.serialize();
-				var openkey = "0x" + addr;
-				localStorage.setItem("keystore", keystorage);
-				localStorage.setItem("isreg", 1);
-				localStorage.setItem("openkey", "0x" + addr);
-				localStorage.setItem("privkey", prv_key);
-				localStorage.setItem("mainnet", "off");
-				console.log(addr, prv_key);
-				$.get("https://platform.dao.casino/api/?a=faucet&to=" + openkey);
-				window.location = "balance.html" + window.location.search;
-			});
-		});
-
-	} else {
-		$('#popup-open-text-before').html('Please, enter your seed phrase')
-
-	}
-}
-
-function setCookie(name, value, options) {
-	options = options || {};
-	options.expires = 10000000;
-	var expires = options.expires;
-
-	if (typeof expires == "number" && expires) {
-		var d = new Date();
-		d.setTime(d.getTime() + expires * 1000);
-		expires = options.expires = d;
-	}
-	if (expires && expires.toUTCString) {
-		options.expires = expires.toUTCString();
-	}
-
-	value = encodeURIComponent(value);
-
-	var updatedCookie = name + "=" + value;
-
-	for (var propName in options) {
-		updatedCookie += "; " + propName;
-		var propValue = options[propName];
-		if (propValue !== true) {
-			updatedCookie += "=" + propValue;
-		}
-	}
-
-	document.cookie = updatedCookie;
-}
-
-var lochash = location.hash.substr(1);
-if (ref = lochash.substr(lochash.indexOf('ref_')).split('_')[1]) {
-	setCookie("ref", ref);
-}
-
-
-$(".toggle-bg").click(function () {
-
-	localStorage.setItem("mainnet", $("input[name=toggle]:checked").val());
-	mainnet = localStorage.getItem('mainnet');
-	if (!localStorage.getItem("mainnet")) {
-		localStorage.setItem("mainnet", "off");
-	}
-
-	rebalance();
-});
-
-
-
-if (localStorage.getItem("mainnet") == "on") {
-
-	$(".free-money").addClass("free-money__enable");
-	$(".real-money").addClass("free-money__disabled");
-	rebalance();
-	$("#checked-on").click();
-	localStorage.setItem("mainnet", "on");
-} else {
-	rebalance();
-	$.get()
-}
-var totalwei;
-
-function rebalance() {
-	var openkey = localStorage.getItem('openkey')
-	if (openkey) {
-		if (!totalwei) $("#balance").html("? BET");
-		setTimeout(function () {
-			//var erc20address = "0x95a48dca999c89e4e284930d9b9af973a7481287"; // tesnet
-			// var erc20address = "0xb207301c77a9e6660c9c2e5e8608eaa699a9940f"; // testrpc
-			callData = "0x70a08231";
-			//var urlInfura = "https://rinkeby.infura.io/JCnK5ifEPH9qcQkX0Ahl";	
-			// var urlInfura = "http://46.101.244.101:8545";
-			//if (localStorage.getItem("mainnet") == "on") u = "https://mainnet.infura.io/JCnK5ifEPH9qcQkX0Ahl";
-			$.ajax({
-				type: "POST",
-				url: urlInfura,
-				dataType: 'json',
-				async: false,
-				data: JSON.stringify({
-					"id": 0,
-					"jsonrpc": '2.0',
-					"method": "eth_call",
-					"params": [{
-						"from": openkey,
-						"to": erc20address,
-						"data": callData + pad(numToHex(openkey.substr(2)), 64)
-					}, "latest"]
-				}),
-				success: function (d) {
-					totalwei = d.result;
-
-					$("#balance").html(d.result / 100000000 + " BET");
-					$("#balBET").html(d.result / 100000000 + " BET");
-
-					if (localStorage.getItem("mainnet") == "off" && totalwei == 0) {}
-				}
-			});
-
-			$.ajax({
-				type: "POST",
-				url: urlInfura,
-				dataType: 'json',
-				async: false,
-				data: JSON.stringify({
-					"id": 0,
-					"jsonrpc": '2.0',
-					"method": "eth_getBalance",
-					"params": [openkey, "latest"]
-				}),
-				success: function (d) {
-					totalwei = d.result;
-
-
-					$("#balETH").html((d.result / 10 ** 18).toFixed(3) + " ETH");
-
-				}
-			});
-
-
-
-		}, 5000);
-	}
-}
-
-setInterval(rebalance, 5000);
-
-$.removeCookie = function (key, options) {
-	if ($.cookie(key) === undefined) { // this line is the problem
-		return false;
-	}
-
-	// Must not alter options, thus extending a fresh object...
-	$.cookie(key, '', $.extend({}, options, {
-		expires: -1
-	}));
-	return !$.cookie(key);
+var platform = {
+    referralContract: "0xe195eed0e77b48146aa246dadf987d2504ac88cb",
+    tokenContract: "0x95a48dca999c89e4e284930d9b9af973a7481287",
+    addressOperator: "0x6506e2D72910050554D0C47500087c485DAA9689",
+    node: "https://ropsten.infura.io/JCnK5ifEPH9qcQkX0Ahl"
 };
+
+var player = {
+    ks: lightwallet.keystore.deserialize(localStorage.getItem('keystore')),
+    openkey: localStorage.getItem('openkey'),
+    referrer: localStorage.getItem('referrer'),
+    bet: 0,
+    eth: 0
+}
+
+var ks = player.ks;
+
+//________________________________________________
+
+function callERC20(callname, adr, callback) {
+    switch (callname) {
+        case "balanceOf":
+            callData = "0x70a08231";
+            break;
+    }
+    $.ajax({
+        type: "POST",
+        url: platform.node,
+        dataType: 'json',
+        async: true,
+        data: JSON.stringify({
+            "id": 0,
+            "jsonrpc": '2.0',
+            "method": "eth_call",
+            "params": [{
+                "to": platform.tokenContract,
+                "data": callData + pad(adr.substr(2), 64)
+            }, "latest"]
+        }),
+        success: function (d) {
+            callback(hexToNum(d.result) / 10 ** 8)
+        }
+    });
+};
+
+function getBalance(address, callback) {
+    $.ajax({
+        type: "POST",
+        url: platform.node,
+        dataType: 'json',
+        async: true,
+        data: JSON.stringify({
+            "id": 0,
+            "jsonrpc": '2.0',
+            "method": 'eth_getBalance',
+            "params": [address, "latest"]
+        }),
+        success: function (d) {
+            callback(d.result / 10 ** 18);
+        }
+    });
+};
+
+function call(callname, address, callback) {
+    var callData;
+    switch (callname) {
+        case "getTotalRollMade":
+            callData = "0xdf257ba3";
+            break;
+    }
+    $.ajax({
+        type: "POST",
+        url: platform.node,
+        dataType: 'json',
+        async: true,
+        data: JSON.stringify({
+            "id": 0,
+            "jsonrpc": '2.0',
+            "method": "eth_call",
+            "params": [{
+                "to": address,
+                "data": callData + pad(numToHex(address.substr(2)), 64),
+            }, "latest"]
+        }),
+        success: function (d) {
+            callback(hexToNum(d.result))
+        }
+    });
+};
+
+function getNonce() {
+    var nonce;
+    $.ajax({
+        type: "POST",
+        url: platform.node,
+        dataType: 'json',
+        async: false,
+        data: JSON.stringify({
+            "id": 0,
+            "jsonrpc": '2.0',
+            "method": "eth_getTransactionCount",
+            "params": [player.openkey, "latest"]
+        }),
+        success: function (d) {
+            nonce = d.result;
+        }
+    })
+    return nonce;
+}
+
+function sendEth() {
+    var options = {};
+    options.nonce = getNonce();
+    options.to = $("#outetht").val();
+    options.gasPrice = "0x737be7600";
+    options.gasLimit = "0x927c0";
+    options.value = parseFloat($("#amount").val()) * 10 ** 18;
+    ks.keyFromPassword("1234", function (err, pwDerivedKey) {
+        console.log(err);
+        var registerTx = lightwallet.txutils.valueTx(options)
+        var signedTx = lightwallet.signing.signTx(ks, pwDerivedKey, registerTx, player.openkey)
+        $.ajax({
+            type: "POST",
+            url: platform.node,
+            dataType: 'json',
+            async: false,
+            data: JSON.stringify({
+                "id": 0,
+                "jsonrpc": '2.0',
+                "method": "eth_sendRawTransaction",
+                "params": ["0x" + signedTx]
+            }),
+            success: function (d) {
+                console.log("The transaction was signed:", d.result);
+                $("#Wresult").html('YOUR TRANSACTION: <a target="_blank" href="https://ropsten.etherscan.io/tx/' + d.result + '">' + d.result + '</a>')
+            }
+        })
+    })
+}
+
+function sendBet() {
+    var amount = parseFloat($("#amount").val()) * 10 ** 8;
+    var to = $("#outetht").val();
+    var options = {};
+    options.nonce = getNonce();
+    options.to = platform.tokenContract;
+    options.gasPrice = "0x737be7600"; //web3.toHex('31000000000');
+    options.gasLimit = "0x927c0"; //web3.toHex('600000');
+    ks.keyFromPassword("1234", function (err, pwDerivedKey) {
+        console.log(err);
+        var args = [to, amount];
+        var registerTx = lightwallet.txutils.functionTx(erc20abi, 'transfer', args, options)
+        var signedTx = lightwallet.signing.signTx(ks, pwDerivedKey, registerTx, player.openkey)
+        console.log("lightWallet sign:", signedTx)
+        $.ajax({
+            type: "POST",
+            url: platform.node,
+            dataType: 'json',
+            async: false,
+            data: JSON.stringify({
+                "id": 0,
+                "jsonrpc": '2.0',
+                "method": "eth_sendRawTransaction",
+                "params": ["0x" + signedTx]
+            }),
+            success: function (d) {
+                console.log("The transaction was signed:", d.result);
+                $("#Wresult").html('YOUR TRANSACTION: <a target="_blank" href="https://ropsten.etherscan.io/tx/' + d.result + '">' + d.result + '</a>')
+            }
+        })
+    })
+}
+
+//________________________________________________
+
+
+function getTxList(count) {
+
+    var timeOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric'
+    };
+
+    var k = 10 ** 18
+    $.get("https://ropsten.etherscan.io/api?module=account&action=txlist&address=" + player.openkey + "&startblock=0&endblock=latest&", function (d) {
+        for (var n = d.result.length - 1; n > Math.max(0, (d.result.length - count)); n--) {
+            var r = d.result[n];
+            if (r.isError != "0") {
+                continue;
+            }
+            switch (r.input.substr(0, 10)) {
+                case '0x095ea7b3':
+                    $("tbody").append(['<tr>' +
+                        '<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+                        '<td> approve </td>' +
+                        '<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+                        '</tr>'
+                    ].join(''));
+                    break;
+                case '0x29eae053':
+                    $("tbody").append(['<tr>' +
+                        '<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+                        '<td> select service </td>' +
+                        '<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+                        '</tr>'
+                    ].join(''));
+                    break;
+                case '0x34a4f35a':
+                    $("tbody").append(['<tr>' +
+                        '<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+                        '<td> open channel </td>' +
+                        '<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+                        '</tr>'
+                    ].join(''));
+                    break;
+                case '0x2e6eafa6':
+                    $("tbody").append(['<tr>' +
+                        '<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+                        '<td> close channel </td>' +
+                        '<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+                        '</tr>'
+                    ].join(''));
+                    break;
+                case '0x':
+                    if (r.from == player.openkey) {
+                        $("tbody").append(['<tr>' +
+                            '<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+                            '<td>send ' + (r.value) / k + ' ETH to:  <a href="https://ropsten.etherscan.io/address/' + r.to + '" target="_blank"> ' + r.to.substr(0, 24) + '...</td>' +
+                            '<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+                            '</tr>'
+                        ].join(''));
+                    } else {
+                        $("tbody").append(['<tr>' +
+                            '<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+                            '<td>got ' + (r.value) / k + ' Eth from: <a href="https://ropsten.etherscan.io/address/' + r.from + '" target="_blank">' + r.from.substr(0, 24) + '...</td>' +
+                            '<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+                            '</tr>'
+                        ].join(''));
+                    }
+                    break;
+            }
+        }
+
+    })
+}
+
+function faucet(address) {
+    $.ajax({
+        url: "https://platform.dao.casino/faucet?to=" + address,
+        success: function (result) {
+            console.log("bet: ", result[0].result, " eth: ", result[1].result)
+        },
+        error: function () {
+            console.log("faucet error")
+        },
+    });
+}
+
+function getStatistics(address) {
+    callERC20("balanceOf", address, function (result) {
+        console.log(result);
+        $('#bankroll').html(result.toFixed(3) + " BET");
+    })
+    call("getTotalRollMade", address, function (result) {
+        $("#total").html(result);
+    })
+};
+
+function sendRefAndOperator(callback) {
+    var referal = localStorage.ref;
+    var options = {};
+    options.nonce = getNonce();
+    options.to = platform.referralContract;
+    options.gasPrice = "0x9502F9000";
+    options.gasLimit = "0x927c0";
+
+    ks.keyFromPassword("1234", function (err, pwDerivedKey) {
+        if (err) {
+            console.log("ERROR_TRANSACTION:", err);
+            return false;
+        }
+        var args = [operator, referal];
+
+        var registerTx = lightwallet.txutils.functionTx(ref_abi, "setService", args, options);
+        var params = "0x" + lightwallet.signing.signTx(ks, pwDerivedKey, registerTx, player.openkey);
+        arParams = [params];
+        $.ajax({
+            url: platform.node,
+            type: "POST",
+            async: false,
+            dataType: 'json',
+            data: JSON.stringify({
+                "jsonrpc": '2.0',
+                "method": "eth_sendRawTransaction",
+                "params": arParams,
+                "id": 1
+            }),
+            success: function (r) {
+                callback(r.result);
+            }
+        })
+    });
+}
+
+//_____________________Utils_____________________
 
 function pad(num, size) {
-	var s = num + "";
-	while (s.length < size) s = "0" + s;
-	return s;
+    var s = num + "";
+    while (s.length < size) s = "0" + s;
+    return s;
 };
+
+function toFixed(value, precision) {
+    precision = Math.pow(10, precision);
+    return Math.ceil(value * precision) / precision;
+};
+
+function numToHex(num) {
+    return num.toString(16);
+};
+
+function hexToNum(str) {
+    return parseInt(str, 16);
+};
+
+//________________________________________________
+
+setInterval(function () {
+    if (!localStorage.getItem("isreg")) {
+        return;
+    }
+    getBalance(player.openkey, function (balance) {
+        player.eth = balance;
+        $("#balETH").html(balance.toFixed(3) + " ETH");
+    })
+    callERC20('balanceOf', player.openkey, function (balance) {
+        player.bet = balance;
+        $("#balance , #balBET").html(balance + " BET");
+    })
+}, 2000)
+
+//_________________ABI____________________________
+
+var erc20abi = [{
+    "constant": true,
+    "inputs": [],
+    "name": "name",
+    "outputs": [{
+        "name": "",
+        "type": "string"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": false,
+    "inputs": [{
+        "name": "_spender",
+        "type": "address"
+    }, {
+        "name": "_value",
+        "type": "uint256"
+    }],
+    "name": "approve",
+    "outputs": [{
+        "name": "success",
+        "type": "bool"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [{
+        "name": "",
+        "type": "uint256"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": false,
+    "inputs": [{
+        "name": "_from",
+        "type": "address"
+    }, {
+        "name": "_to",
+        "type": "address"
+    }, {
+        "name": "_value",
+        "type": "uint256"
+    }],
+    "name": "transferFrom",
+    "outputs": [{
+        "name": "success",
+        "type": "bool"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [],
+    "name": "decimals",
+    "outputs": [{
+        "name": "",
+        "type": "uint8"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [],
+    "name": "standard",
+    "outputs": [{
+        "name": "",
+        "type": "string"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [{
+        "name": "",
+        "type": "address"
+    }],
+    "name": "balanceOf",
+    "outputs": [{
+        "name": "",
+        "type": "uint256"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [],
+    "name": "symbol",
+    "outputs": [{
+        "name": "",
+        "type": "string"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": false,
+    "inputs": [{
+        "name": "_to",
+        "type": "address"
+    }, {
+        "name": "_value",
+        "type": "uint256"
+    }],
+    "name": "transfer",
+    "outputs": [],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": false,
+    "inputs": [{
+        "name": "_spender",
+        "type": "address"
+    }, {
+        "name": "_value",
+        "type": "uint256"
+    }, {
+        "name": "_extraData",
+        "type": "bytes"
+    }],
+    "name": "approveAndCall",
+    "outputs": [{
+        "name": "success",
+        "type": "bool"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [{
+        "name": "",
+        "type": "address"
+    }, {
+        "name": "",
+        "type": "address"
+    }],
+    "name": "allowance",
+    "outputs": [{
+        "name": "",
+        "type": "uint256"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "inputs": [],
+    "payable": false,
+    "type": "constructor"
+}, {
+    "payable": false,
+    "type": "fallback"
+}, {
+    "anonymous": false,
+    "inputs": [{
+        "indexed": true,
+        "name": "from",
+        "type": "address"
+    }, {
+        "indexed": true,
+        "name": "to",
+        "type": "address"
+    }, {
+        "indexed": false,
+        "name": "value",
+        "type": "uint256"
+    }],
+    "name": "Transfer",
+    "type": "event"
+}]
+
+var ref_abi = [{
+    "constant": true,
+    "inputs": [{
+        "name": "_player",
+        "type": "address"
+    }],
+    "name": "getAdviser",
+    "outputs": [{
+        "name": "",
+        "type": "address"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": false,
+    "inputs": [{
+        "name": "_operator",
+        "type": "address"
+    }, {
+        "name": "_adviser",
+        "type": "address"
+    }],
+    "name": "setService",
+    "outputs": [],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [{
+        "name": "",
+        "type": "address"
+    }],
+    "name": "adviserOf",
+    "outputs": [{
+        "name": "",
+        "type": "address"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [{
+        "name": "_player",
+        "type": "address"
+    }],
+    "name": "getOperator",
+    "outputs": [{
+        "name": "",
+        "type": "address"
+    }],
+    "payable": false,
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [{
+        "name": "",
+        "type": "address"
+    }],
+    "name": "operatorOf",
+    "outputs": [{
+        "name": "",
+        "type": "address"
+    }],
+    "payable": false,
+    "type": "function"
+}]
