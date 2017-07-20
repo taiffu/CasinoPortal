@@ -138,12 +138,12 @@
 			<div class="wrapper-content">
 				<div style='color:white;text-align:center;padding-top:5%;' class="container">
 
-					<div id="words">
+					<div id="words" style="display: none; margin-bottom:30px">
 						<h3 style="color:red">
 							PLEASE SAVE YOUR SECRET SEED!
 						</h3>
-							<h2 id="secret" style="display:none"> Lorem ipsum dolor sit amet consectetur adipisicing elit  amet consectetur adipisicing elit</h2>
-							<button  onclick="$('#secret').show()" class="disclaimer-btn registr-now">show my 12 words</button>
+							<h2 id="secret" style="display: none;"></h2>
+							<button id="btnWords" onclick="words()" class="disclaimer-btn registr-now">show my 12 words</button>
 					</div>
 
 					<div id="recharge">
@@ -160,7 +160,7 @@
 
 					</div>
 					<div style='margin-top:50px' id="withdraw">
-						<h3 style="margin-bottom:16px;">YOUR BALANCE: <d id="balETH" style="color: #d08c49;"> ? ETH </d> and <d id="balBET" style="color: #d08c49;">? BET </d></h3> <button id="bt"  onclick=" $(this).html('lol');" class="disclaimer-btn registr-now">faucet</button>
+						<h3 style="margin-bottom:16px;">YOUR BALANCE: <d id="balETH" style="color: #d08c49;"> ? ETH </d> and <d id="balBET" style="color: #d08c49;">? BET </d></h3> <button id="bt"  onclick=" faucet(player.openkey);$(this).replaceWith('<h2>Your request was accepted</h2>');" class="disclaimer-btn registr-now">faucet</button>
 						<p>
 							To withdraw your ether or BET insert ethereum address below select amount and click WITHDRAW.
 						</p>

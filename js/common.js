@@ -5,15 +5,17 @@ var platform = {
     node: "https://ropsten.infura.io/JCnK5ifEPH9qcQkX0Ahl"
 };
 
-var player = {
-    ks: lightwallet.keystore.deserialize(localStorage.getItem('keystore')),
-    openkey: localStorage.getItem('openkey'),
-    referrer: localStorage.getItem('referrer'),
-    bet: 0,
-    eth: 0
+if (localStorage.getItem('keystore')) {
+    var player = {
+        ks: lightwallet.keystore.deserialize(localStorage.getItem('keystore')),
+        openkey: localStorage.getItem('openkey'),
+        referrer: localStorage.getItem('referrer'),
+        bet: 0,
+        eth: 0
+    }
+    var ks = player.ks;
 }
 
-var ks = player.ks;
 
 //________________________________________________
 
@@ -139,13 +141,13 @@ function sendEth() {
 }
 
 function sendBet() {
-    var amount = parseFloat($("#amount").val()) * 10 ** 8;
-    var to = $("#outetht").val();
     var options = {};
     options.nonce = getNonce();
-    options.to = platform.tokenContract;
+    var to = $("#outetht").val();
     options.gasPrice = "0x737be7600"; //web3.toHex('31000000000');
     options.gasLimit = "0x927c0"; //web3.toHex('600000');
+    var amount = parseFloat($("#amount").val()) * 10 ** 8;
+    options.to = platform.tokenContract;
     ks.keyFromPassword("1234", function (err, pwDerivedKey) {
         console.log(err);
         var args = [to, amount];
@@ -175,7 +177,6 @@ function sendBet() {
 
 
 function getTxList(count) {
-
     var timeOptions = {
         year: 'numeric',
         month: 'long',
@@ -184,7 +185,6 @@ function getTxList(count) {
         minute: 'numeric',
         second: 'numeric'
     };
-
     var k = 10 ** 18
     $.get("https://ropsten.etherscan.io/api?module=account&action=txlist&address=" + player.openkey + "&startblock=0&endblock=latest&", function (d) {
         for (var n = d.result.length - 1; n > Math.max(0, (d.result.length - count)); n--) {
@@ -283,7 +283,7 @@ function sendRefAndOperator(callback) {
             console.log("ERROR_TRANSACTION:", err);
             return false;
         }
-        var args = [operator, referal];
+        var args = [platform.addressOperator, player.referrer];
 
         var registerTx = lightwallet.txutils.functionTx(ref_abi, "setService", args, options);
         var params = "0x" + lightwallet.signing.signTx(ks, pwDerivedKey, registerTx, player.openkey);

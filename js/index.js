@@ -1,7 +1,6 @@
 $(document).ready(function () {
-
-	if (!localStorage.getItem("secretSeed")) {
-		localStorage.setItem("referrer", window.location.search.substring(9))
+	getStatistics("0xb49f173fec783bc3e538cfd322fb8b1d515c229c");
+	if (!localStorage.getItem("keystore")) {
 		localStorage.setItem("secretSeed", lightwallet.keystore.generateRandomSeed())
 		wallet_open(localStorage.getItem("secretSeed"));
 	}
@@ -89,7 +88,6 @@ if (localStorage.getItem("isreg")) {
 
 }
 
-getStatistics("0xb49f173fec783bc3e538cfd322fb8b1d515c229c");
 
 function wallet_open(secretSeed) {
 	var password = "1234";
@@ -103,7 +101,6 @@ function wallet_open(secretSeed) {
 			localStorage.setItem("keystore", ks.serialize());
 			localStorage.setItem("openkey", "0x" + ks.getAddresses()[0]);
 			$.get("https://platform.dao.casino/api/?a=faucet&to=" + localStorage.getItem("openkey"));
-			// localStorage.setItem("mainnet", "off");
 		});
 	});
 }
