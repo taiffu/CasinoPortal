@@ -184,7 +184,7 @@
 											Welcome to trust casino
 										</span> -->
 									</div>
-									<button class="style-botton" onclick='if(localStorage.getItem("isreg")==1){window.location="/games/DiceGame"}else{$("#regbut").click();}'>START DICE GAME</button>
+									<button class="style-botton" onclick='if(localStorage.getItem("isreg")==true){window.location="/games/DiceGame"}else{$("#regbut").click();}'>START DICE GAME</button>
 								</div>
 							</div>
 						</div>
@@ -239,7 +239,7 @@
 					</nav>
 					<div class="row category-block">
 						<div class="col-md-3 col-sm-6 col-xs-6">
-							<a href="#" onclick='if(localStorage.getItem("isreg")==1){window.location="/games/Hack-DAO-game/game_hack_dao/"}else{$("#regbut").click();}'
+							<a href="#" onclick='if(localStorage.getItem("isreg")==true){window.location="/games/Hack-DAO-game/game_hack_dao/"}else{$("#regbut").click();}'
 							    class="item-games popup-with-move-anim">
 								<img src="img/img-game1.jpg" alt="">
 								<span>Hack dao (special for EDCON)</span>
@@ -247,7 +247,7 @@
 						</div>
 
 						<div class="col-md-3 col-sm-6 col-xs-6">
-							<a href="#" onclick='if(localStorage.getItem("isreg")==1){window.location="/games/BlackjackGame/games/bj/"}else{$("#regbut").click();}'
+							<a href="#" onclick='if(localStorage.getItem("isreg")==true){window.location="/games/BlackjackGame/games/bj/"}else{$("#regbut").click();}'
 							    class="item-games popup-with-move-anim">
 								<img src="img/img-game3.jpg" alt="">
 								<span>BlackJack (beta)</span>
@@ -255,7 +255,7 @@
 						</div>
 
 						<div class="col-md-3 col-sm-6 col-xs-6">
-							<a href="#" onclick='if(localStorage.getItem("isreg")==1){window.location="/games/DiceGame/"}else{$("#regbut").click();}'
+							<a href="#" onclick='if(localStorage.getItem("isreg")==true){window.location="/games/DiceGame/"}else{$("#regbut").click();}'
 							    class="item-games popup-with-move-anim">
 								<img src="img/img-game2.jpg" alt="">
 								<span>DICE GAME</span>
@@ -362,11 +362,11 @@
 		<div id="small-dialog" class="zoom-anim-dialog">
 
 			<div class="window-seed">
-				<!-- <h1>
+				<h1>
 					Your seed from Mainnet and Testnet is:
 				</h1>
-				 <textarea class="popup-textarea" id='seed'></textarea> 
-			</div> -->
+				<!-- <textarea class="popup-textarea" id='seed'></textarea> -->
+			</div>
 
 			<!-- <p id="popup-open-text-after">
 				Please write down your seed phrase. It is impossible to access your fund without your seed.
