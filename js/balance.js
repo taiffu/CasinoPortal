@@ -34,6 +34,7 @@ $(document).ready(function () {
 	}
 
 	if (player.bet < 3 || player.eth < 3) {
+		console.log(player.bet , player.eth )
 		faucet(player.openkey);
 	}
 })
