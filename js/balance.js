@@ -32,11 +32,7 @@ $(document).ready(function () {
 			}
 		}, 500)
 	}
-
-	if (player.bet < 3 || player.eth < 3) {
-		console.log(player.bet , player.eth )
-		faucet(player.openkey);
-	}
+	
 })
 
 $("#sendValue").click(function (e) {
