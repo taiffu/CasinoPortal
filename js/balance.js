@@ -17,7 +17,7 @@ $(document).ready(function () {
 	getTxList(10);
 
 	if (!localStorage.getItem("isreg")) {
-		localStorage.setItem("isreg", true);
+		localStorage.setItem("isreg", 1);
 		faucet(player.openkey);
 		$('#bg_popup.faucet').show();
 		var i = 0;
