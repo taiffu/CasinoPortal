@@ -5,6 +5,7 @@ $(document).ready(function () {
 		return;
 	}
 
+	localStorage.setItem("isreg", 1);
 	var clipboard = new Clipboard('#myado');
 	$("#myado").html(player.openkey);
 
@@ -13,7 +14,6 @@ $(document).ready(function () {
 	
 
 	if (localStorage.getItem('secretSeed')) {
-		localStorage.setItem("isreg", 1);
 		$('#bg_popup.faucet').show();
 		$("#words").show();
 		faucet(player.openkey);
