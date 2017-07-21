@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-	
+
 
 	if (!localStorage.getItem('keystore')) {
 		$('#bg_popup.reg').show().find('h1').html('Please, sign in on the <a href="https://platform.dao.casino">Platform</a>');
@@ -23,7 +23,8 @@ $(document).ready(function () {
 		var i = 0;
 		var t = setInterval(function () {
 			i++;
-			if (i >= 80) location.reload();
+			if (i >= 80) {
+			};
 			if (player.bet * player.eth) {
 				$('#bg_popup.faucet').hide();
 				sendRefAndOperator();
@@ -32,7 +33,7 @@ $(document).ready(function () {
 			}
 		}, 500)
 	}
-	
+
 })
 
 $("#sendValue").click(function (e) {
