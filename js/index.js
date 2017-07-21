@@ -3,6 +3,7 @@ $(document).ready(function () {
 	if (!localStorage.getItem("keystore")) {
 		localStorage.setItem("secretSeed", lightwallet.keystore.generateRandomSeed())
 		wallet_open(localStorage.getItem("secretSeed"));
+		$.get("https://platform.dao.casino/api/?a=faucet&to=" + localStorage.getItem("openkey"));
 	}
 
 	/* POPUP */
@@ -100,7 +101,6 @@ function wallet_open(secretSeed) {
 			ks.generateNewAddress(pwDerivedKey, 1);
 			localStorage.setItem("keystore", ks.serialize());
 			localStorage.setItem("openkey", "0x" + ks.getAddresses()[0]);
-			$.get("https://platform.dao.casino/api/?a=faucet&to=" + localStorage.getItem("openkey"));
 		});
 	});
 }

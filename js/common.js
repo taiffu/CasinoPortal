@@ -19,12 +19,7 @@ if (localStorage.getItem('keystore')) {
 
 //________________________________________________
 
-function callERC20(callname, adr, callback) {
-    switch (callname) {
-        case "balanceOf":
-            callData = "0x70a08231";
-            break;
-    }
+function req(method, params, callback) {
     $.ajax({
         type: "POST",
         url: platform.node,
@@ -33,62 +28,14 @@ function callERC20(callname, adr, callback) {
         data: JSON.stringify({
             "id": 0,
             "jsonrpc": '2.0',
-            "method": "eth_call",
-            "params": [{
-                "to": platform.tokenContract,
-                "data": callData + pad(adr.substr(2), 64)
-            }, "latest"]
+            "method": method,
+            "params": params,
         }),
         success: function (d) {
-            callback(hexToNum(d.result) / 10 ** 8)
+            callback(d.result)
         }
     });
-};
-
-function getBalance(address, callback) {
-    $.ajax({
-        type: "POST",
-        url: platform.node,
-        dataType: 'json',
-        async: true,
-        data: JSON.stringify({
-            "id": 0,
-            "jsonrpc": '2.0',
-            "method": 'eth_getBalance',
-            "params": [address, "latest"]
-        }),
-        success: function (d) {
-            callback(d.result / 10 ** 18);
-        }
-    });
-};
-
-function call(callname, address, callback) {
-    var callData;
-    switch (callname) {
-        case "getTotalRollMade":
-            callData = "0xdf257ba3";
-            break;
-    }
-    $.ajax({
-        type: "POST",
-        url: platform.node,
-        dataType: 'json',
-        async: true,
-        data: JSON.stringify({
-            "id": 0,
-            "jsonrpc": '2.0',
-            "method": "eth_call",
-            "params": [{
-                "to": address,
-                "data": callData + pad(numToHex(address.substr(2)), 64),
-            }, "latest"]
-        }),
-        success: function (d) {
-            callback(hexToNum(d.result))
-        }
-    });
-};
+}
 
 function getNonce() {
     var nonce;
@@ -261,12 +208,22 @@ function faucet(address) {
 }
 
 function getStatistics(address) {
-    callERC20("balanceOf", address, function (result) {
-        $('#bankroll').html(result.toFixed(3) + " BET");
+
+    req("eth_call", [{
+        "to": platform.tokenContract,
+        "data": "0x70a08231" + pad(address.substr(2), 64)
+    }, "latest"], function (d) {
+        $('#bankroll').html((hexToNum(d) / 10 ** 8).toFixed(3) + " BET");
     })
-    call("getTotalRollMade", address, function (result) {
-        $("#total").html(result);
+
+   
+    req("eth_call", [{
+        "to": address,
+        "data": "0xdf257ba3" + pad(numToHex(address.substr(2)), 64),
+    }, "latest"], function (d) {
+        $("#total").html(hexToNum(d));
     })
+
 };
 
 function sendRefAndOperator(callback) {
@@ -332,14 +289,21 @@ setInterval(function () {
     if (!localStorage.getItem("isreg")) {
         return;
     }
-    getBalance(player.openkey, function (balance) {
-        player.eth = balance;
-        $("#balETH").html(balance.toFixed(3) + " ETH");
+
+    req("eth_getBalance", [player.openkey, "latest"], function (d) {
+        player.eth = d / 10 ** 18;
+        $("#balETH").html((d / 10 ** 18).toFixed(3) + " ETH");
     })
-    callERC20('balanceOf', player.openkey, function (balance) {
-        player.bet = balance;
-        $("#balance , #balBET").html(balance + " BET");
+
+
+    req("eth_call", [{
+        "to": platform.tokenContract,
+        "data": "0x70a08231" + pad(player.openkey.substr(2), 64)
+    }, "latest"], function (d) {
+        player.bet = (d / 10 ** 8);
+        $("#balance , #balBET").html(d / 10 ** 8 + " BET");
     })
+
 }, 2000)
 
 //_________________ABI____________________________

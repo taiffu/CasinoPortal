@@ -1,25 +1,23 @@
 $(document).ready(function () {
 
-
-
 	if (!localStorage.getItem('keystore')) {
 		$('#bg_popup.reg').show().find('h1').html('Please, sign in on the <a href="https://platform.dao.casino">Platform</a>');
 		return;
 	}
 
-	if (localStorage.getItem('secretSeed')) {
-		$("#words").show();
-	}
-
 	var clipboard = new Clipboard('#myado');
 	$("#myado").html(player.openkey);
 
-	getTxList(10);
+	setInterval(function () {
+		$('tbody').empty();
+		getTxList(10);
+	}, 3000)
 
-	if (!localStorage.getItem("isreg")) {
+	if (localStorage.getItem('secretSeed')) {
 		localStorage.setItem("isreg", 1);
-		faucet(player.openkey);
 		$('#bg_popup.faucet').show();
+		$("#words").show();
+		faucet(player.openkey);
 		var i = 0;
 		var t = setInterval(function () {
 			i++;
@@ -38,6 +36,7 @@ $(document).ready(function () {
 		}, 500)
 	}
 
+
 })
 
 $("#sendValue").click(function (e) {
@@ -48,15 +47,6 @@ $("#sendValue").click(function (e) {
 		sendBet();
 	}
 });
-
-$("input#outetht").change(function () {
-
-	// TODO  
-
-	if (!/0x[0-9A-F]{40}/i.test($(this).val())) {
-		return;
-	}
-})
 
 function words() {
 	$('#secret').show().html(localStorage.getItem('secretSeed'))
