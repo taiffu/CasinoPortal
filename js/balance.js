@@ -8,10 +8,9 @@ $(document).ready(function () {
 	var clipboard = new Clipboard('#myado');
 	$("#myado").html(player.openkey);
 
-	setInterval(function () {
-		$('tbody').empty();
+	
 		getTxList(10);
-	}, 3000)
+	
 
 	if (localStorage.getItem('secretSeed')) {
 		localStorage.setItem("isreg", 1);

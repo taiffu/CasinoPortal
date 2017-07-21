@@ -122,7 +122,6 @@ function sendBet() {
 
 //________________________________________________
 
-
 function getTxList(count) {
     var timeOptions = {
         year: 'numeric',
@@ -134,7 +133,7 @@ function getTxList(count) {
     };
     var k = 10 ** 18
     $.get("https://ropsten.etherscan.io/api?module=account&action=txlist&address=" + player.openkey + "&startblock=0&endblock=latest&", function (d) {
-        for (var n = d.result.length - 1; n > Math.max(0, (d.result.length - count)); n--) {
+        for (var n = d.result.length - 1; n >= Math.max(0, (d.result.length - count)); n--) {
             var r = d.result[n];
             if (r.isError != "0") {
                 continue;
@@ -144,6 +143,14 @@ function getTxList(count) {
                     $("tbody").append(['<tr>' +
                         '<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
                         '<td> approve </td>' +
+                        '<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
+                        '</tr>'
+                    ].join(''));
+                    break;
+                    case '0xa9059cbb':
+                    $("tbody").append(['<tr>' +
+                        '<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
+                        '<td>send ' + hexToNum(r.input.substr(r.input.length - 64, r.input.length))/10**8 + ' BET to:  <a href="https://ropsten.etherscan.io/address/0x' + r.input.substr(34, 40) + '" target="_blank"> 0x' + r.input.substr(34 , 22) + '...</td>' +
                         '<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
                         '</tr>'
                     ].join(''));
