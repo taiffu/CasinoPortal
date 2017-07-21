@@ -57,50 +57,24 @@ function getNonce() {
     return nonce;
 }
 
-function sendEth() {
+function send() {
     var options = {};
     options.nonce = getNonce();
-    options.to = $("#outetht").val();
     options.gasPrice = "0x737be7600";
     options.gasLimit = "0x927c0";
-    options.value = parseFloat($("#amount").val()) * 10 ** 18;
-    ks.keyFromPassword("1234", function (err, pwDerivedKey) {
-        console.log(err);
-        var registerTx = lightwallet.txutils.valueTx(options)
-        var signedTx = lightwallet.signing.signTx(ks, pwDerivedKey, registerTx, player.openkey)
-        $.ajax({
-            type: "POST",
-            url: platform.node,
-            dataType: 'json',
-            async: false,
-            data: JSON.stringify({
-                "id": 0,
-                "jsonrpc": '2.0',
-                "method": "eth_sendRawTransaction",
-                "params": ["0x" + signedTx]
-            }),
-            success: function (d) {
-                console.log("The transaction was signed:", d.result);
-                $("#Wresult").html('YOUR TRANSACTION: <a target="_blank" href="https://ropsten.etherscan.io/tx/' + d.result + '">' + d.result + '</a>')
-            }
-        })
-    })
-}
 
-function sendBet() {
-    var options = {};
-    options.nonce = getNonce();
-    var to = $("#outetht").val();
-    options.gasPrice = "0x737be7600"; //web3.toHex('31000000000');
-    options.gasLimit = "0x927c0"; //web3.toHex('600000');
-    var amount = parseFloat($("#amount").val()) * 10 ** 8;
-    options.to = platform.tokenContract;
     ks.keyFromPassword("1234", function (err, pwDerivedKey) {
         console.log(err);
-        var args = [to, amount];
-        var registerTx = lightwallet.txutils.functionTx(erc20abi, 'transfer', args, options)
+        if ($("select#typeSend").val() === "eth") {
+            options.to = $("#outetht").val();
+            options.value = parseFloat($("#amount").val()) * 10 ** 18;
+            var registerTx = lightwallet.txutils.valueTx(options)
+        } else if ($("select#typeSend").val() === "bet") {
+            options.to = platform.tokenContract;
+            var registerTx = lightwallet.txutils.functionTx(erc20abi, 'transfer', [$("#outetht").val(), parseFloat($("#amount").val()) * 10 ** 8], options)
+        }
+
         var signedTx = lightwallet.signing.signTx(ks, pwDerivedKey, registerTx, player.openkey)
-        console.log("lightWallet sign:", signedTx)
         $.ajax({
             type: "POST",
             url: platform.node,
@@ -147,10 +121,10 @@ function getTxList(count) {
                         '</tr>'
                     ].join(''));
                     break;
-                    case '0xa9059cbb':
+                case '0xa9059cbb':
                     $("tbody").append(['<tr>' +
                         '<td>' + new Date(parseFloat(r.timeStamp) * 1000).toLocaleString("en-US", timeOptions) + '</td>' +
-                        '<td>send ' + hexToNum(r.input.substr(r.input.length - 64, r.input.length))/10**8 + ' BET to:  <a href="https://ropsten.etherscan.io/address/0x' + r.input.substr(34, 40) + '" target="_blank"> 0x' + r.input.substr(34 , 22) + '...</td>' +
+                        '<td>send ' + hexToNum(r.input.substr(r.input.length - 64, r.input.length)) / 10 ** 8 + ' BET to:  <a href="https://ropsten.etherscan.io/address/0x' + r.input.substr(34, 40) + '" target="_blank"> 0x' + r.input.substr(34, 22) + '...</td>' +
                         '<td><a  href="https://ropsten.etherscan.io/tx/' + r.hash + '" target="_blank">' + r.hash.substr(0, 32) + '... </td>' +
                         '</tr>'
                     ].join(''));
@@ -223,7 +197,7 @@ function getStatistics(address) {
         $('#bankroll').html((hexToNum(d) / 10 ** 8).toFixed(3) + " BET");
     })
 
-   
+
     req("eth_call", [{
         "to": address,
         "data": "0xdf257ba3" + pad(numToHex(address.substr(2)), 64),

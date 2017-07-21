@@ -9,9 +9,9 @@ $(document).ready(function () {
 	var clipboard = new Clipboard('#myado');
 	$("#myado").html(player.openkey);
 
-	
-		getTxList(10);
-	
+
+	getTxList(10);
+
 
 	if (localStorage.getItem('secretSeed')) {
 		$('#bg_popup.faucet').show();
@@ -40,11 +40,7 @@ $(document).ready(function () {
 
 $("#sendValue").click(function (e) {
 	e.preventDefault();
-	if ($("select#typeSend").val() == "eth") {
-		sendEth();
-	} else if ($("select#typeSend").val() == "bet") {
-		sendBet();
-	}
+	send();
 });
 
 function words() {
