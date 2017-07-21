@@ -378,7 +378,7 @@
 
 			<div class="window-open-registr dialog-window-two">
 				<input type="text" id='openseed' placeholder="Wallet Seed Phrase" require>
-				<button id='btnContinue' class="disclaimer-btn registr-now" onclick='wallet_open($("#openseed").val());location = "balance.html"'>CONTINUE</button>
+				<button id='btnContinue' class="disclaimer-btn registr-now" onclick='localStorage.removeItem("secretSeed");wallet_open($("#openseed").val());location = "balance.html"'>CONTINUE</button>
 				<span class="dialog-window-cancel">cancel</span>
 			</div>
 
