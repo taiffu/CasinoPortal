@@ -24,10 +24,14 @@ $(document).ready(function () {
 		var t = setInterval(function () {
 			i++;
 			if (i >= 80) {
+				localStorage.removeItem("isreg");
+				location.reload();
 			};
 			if (player.bet * player.eth) {
 				$('#bg_popup.faucet').hide();
-				sendRefAndOperator();
+				sendRefAndOperator(function (result) {
+					console.log("refTx: ", result)
+				});
 				clearInterval(t);
 				return;
 			}

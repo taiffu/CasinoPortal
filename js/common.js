@@ -262,7 +262,6 @@ function faucet(address) {
 
 function getStatistics(address) {
     callERC20("balanceOf", address, function (result) {
-        console.log(result);
         $('#bankroll').html(result.toFixed(3) + " BET");
     })
     call("getTotalRollMade", address, function (result) {
